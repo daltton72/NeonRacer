@@ -1,11 +1,11 @@
-<!-- NEON RACER v30.66. Track 5 rebuilt as a rounded three-lobe circuit from the supplied reference; non-crossing centreline and road-edge clearance. -->
+<!-- NEON RACER v30.68. Track 5 is reconstructed from a fixed trefoil spline traced to the reference; the three plan-view crossings are grade-separated, and all driving systems share the same centreline. -->
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#02070a">
-<title>NEON RACER v30.66 // NEXUS TRI-FLOW TRACK 5</title>
+<title>NEON RACER v30.68 // NEXUS TRI-FLOW TRACK 5</title>
 <style>
 :root{--mint:#00ffc2;--cyan:#00dfff;--blue:#4c8dff;--gold:#ffc34d;--ink:#02090e;--glass:rgba(2,13,20,.72);--line:rgba(0,255,221,.58);--text:#e4fffb;--muted:#83c9cf}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}button{color:inherit;font:inherit;cursor:pointer}button:focus-visible{outline:2px solid white;outline-offset:3px}#world{position:fixed;inset:0;width:100%;height:100%;display:block;background:#02070e}#realCarLayer{position:fixed;left:0;top:0;right:auto;bottom:auto;width:100%;height:100%;display:block;visibility:visible;opacity:1;pointer-events:none;z-index:2}#vehicleLightFX{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1.5}#fx{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 38%,rgba(0,0,0,.12) 70%,rgba(0,0,0,.35) 120%);z-index:1}.hud,.screen{position:fixed;inset:0;z-index:3}.screen{display:none;pointer-events:none}.screen.active{display:block;pointer-events:auto}.interactive{pointer-events:auto}.topline{position:absolute;left:clamp(16px,3vw,42px);right:clamp(16px,3vw,42px);top:clamp(14px,2.4vh,26px);display:flex;align-items:center;justify-content:space-between;gap:16px;pointer-events:none}.microbrand{font-size:clamp(13px,1.3vw,19px);font-style:italic;font-weight:1000;letter-spacing:.15em;text-shadow:0 0 14px #00ffc8}.microbrand span{color:var(--mint)}.toptools{display:flex;gap:10px;align-items:center}.chip{border:1px solid rgba(0,255,215,.42);background:rgba(0,12,19,.72);box-shadow:inset 0 0 20px rgba(0,255,210,.04);padding:8px 12px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;backdrop-filter:blur(10px)}.chip b{color:var(--mint);font-size:12px;margin-left:6px}.view{position:absolute;inset:0;padding:clamp(74px,10vh,112px) clamp(16px,4.5vw,68px) clamp(24px,4vh,42px);pointer-events:none}.menu-layout{display:grid;grid-template-columns:minmax(250px,350px) 1fr;gap:clamp(28px,5vw,80px);align-items:center;height:100%;max-width:1440px;margin:auto}.menu-left{max-width:350px;pointer-events:auto}.eyebrow{font-size:10px;letter-spacing:.3em;color:#7edbdc;text-transform:uppercase;margin-bottom:16px}.logo{font-size:clamp(50px,7.2vw,100px);font-weight:1000;font-style:italic;letter-spacing:-.08em;line-height:.76;transform:skewX(-9deg);color:#e5fff9;text-shadow:0 0 2px #fff,0 0 14px rgba(0,255,187,.9),0 0 35px rgba(0,211,255,.4)}.logo .second{display:block;margin:12px 0 0 14px;font-size:.5em;letter-spacing:.24em;color:var(--mint);text-shadow:0 0 18px #00ffc2}.tagline{font-size:10px;letter-spacing:.25em;color:#b9fff5;margin:24px 0 28px;white-space:nowrap}.button-stack{display:grid;gap:9px}.neon-btn{position:relative;min-height:53px;padding:12px 17px;border:1px solid rgba(0,255,217,.65);text-align:left;text-transform:uppercase;letter-spacing:.045em;font-size:12px;font-weight:850;background:linear-gradient(100deg,rgba(0,255,185,.15),rgba(1,20,30,.86) 58%,rgba(0,216,255,.06));box-shadow:inset 0 0 20px rgba(0,255,211,.06),0 0 0 rgba(0,255,211,0);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%);transition:filter .14s,transform .14s,box-shadow .14s}.neon-btn:hover{filter:brightness(1.35);box-shadow:inset 0 0 22px rgba(0,255,211,.14),0 0 15px rgba(0,255,211,.18);transform:translateY(-1px)}.neon-btn:active{transform:scale(.99)}.neon-btn.primary{border-color:#00ffd0;background:linear-gradient(100deg,rgba(0,255,182,.25),rgba(0,32,42,.91) 60%,rgba(0,225,255,.12));box-shadow:inset 0 0 26px rgba(0,255,207,.12),0 0 20px rgba(0,255,207,.08)}.button-icon{display:inline-flex;width:31px;align-items:center;justify-content:center;font-size:21px;color:var(--mint);margin-right:8px;text-shadow:0 0 12px var(--mint)}.button-title{display:inline-block;vertical-align:middle}.button-sub{display:block;font-size:9px;font-weight:650;letter-spacing:.13em;color:#77e3dd;margin:3px 0 0 40px}.menu-foot{margin-top:20px;text-align:center;font-size:9px;letter-spacing:.18em;color:#6dbabf}.menu-foot b{color:var(--mint);font-weight:700}.home-info{align-self:end;justify-self:end;width:min(100%,330px);display:grid;gap:10px;margin-bottom:12px}.info-tile{padding:14px 16px;border-left:2px solid var(--mint);background:linear-gradient(100deg,rgba(0,16,25,.79),rgba(0,24,32,.3));backdrop-filter:blur(7px)}.info-tile strong{display:block;font-size:24px;letter-spacing:.01em}.info-tile span{font-size:9px;letter-spacing:.17em;color:#80d2d2;text-transform:uppercase}.page-layout{position:absolute;inset:11% 5% 6%;display:flex;flex-direction:column;gap:18px;min-height:0}.page-heading{display:flex;align-items:end;justify-content:space-between;gap:18px}.page-heading h1{margin:0;font-size:clamp(27px,4vw,48px);font-weight:950;font-style:italic;letter-spacing:.025em;text-transform:uppercase;text-shadow:0 0 18px rgba(0,255,213,.18)}.page-heading p{margin:8px 0 0;font-size:10px;letter-spacing:.2em;color:#83d7d6;text-transform:uppercase}.back{border:1px solid rgba(0,255,219,.4);background:rgba(0,12,19,.7);padding:10px 16px;font-size:10px;letter-spacing:.15em;text-transform:uppercase}.back:hover{border-color:var(--mint)}.track-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;flex:1;min-height:0}.track-card{position:relative;overflow:hidden;min-height:180px;border:1px solid rgba(0,255,215,.36);background:linear-gradient(180deg,rgba(0,12,19,.03),rgba(0,7,12,.92));padding:15px;display:flex;flex-direction:column;justify-content:flex-end;transition:.18s;cursor:pointer}.track-card.selected,.track-card:hover{border-color:var(--mint);box-shadow:0 0 20px rgba(0,255,203,.13),inset 0 0 22px rgba(0,255,203,.06);transform:translateY(-2px)}.track-art{position:absolute;inset:0 0 20% 0;overflow:hidden;background:radial-gradient(ellipse at 50% 62%,var(--art-glow,rgba(0,255,180,.26)),transparent 62%),linear-gradient(160deg,rgba(0,35,49,.2),rgba(0,0,0,.1))}.track-art:before{content:"";position:absolute;width:72%;height:65%;left:14%;top:18%;border:2px solid var(--art-color,#00ffd0);border-radius:50%;filter:drop-shadow(0 0 8px var(--art-color));transform:perspective(150px) rotateX(58deg);box-shadow:0 0 24px var(--art-glow)}.track-art:after{content:"";position:absolute;left:0;right:0;bottom:0;height:68%;background:repeating-linear-gradient(90deg,transparent 0 11%,rgba(0,255,235,.18) 11.2% 11.6%,transparent 12% 18%),linear-gradient(0deg,rgba(0,255,221,.16),transparent 66%);clip-path:polygon(46% 0,54% 0,100% 100%,0 100%)}.track-art:before,.track-art:after{display:none}.track-card h3,.track-card p,.track-card .track-end{position:relative}.track-card h3{margin:0 0 6px;font-size:clamp(12px,1.35vw,17px);letter-spacing:.07em;text-transform:uppercase}.track-card p{margin:0 0 13px;color:#82cfd0;font-size:10px;letter-spacing:.1em}.track-end{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.12em;color:var(--mint)}.actions{display:flex;justify-content:space-between;gap:12px;align-items:center}.actions .neon-btn{min-width:190px;text-align:center}.mode-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}.mode-actions .neon-btn{min-width:170px}@media(max-width:760px){.mode-actions{width:100%;justify-content:stretch}.mode-actions .neon-btn{flex:1;min-width:0}.track-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{align-items:flex-start;flex-wrap:wrap}}.two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;flex:1;min-height:0}.glass-panel{border:1px solid rgba(0,255,220,.4);background:linear-gradient(130deg,rgba(0,17,27,.78),rgba(0,7,14,.7));backdrop-filter:blur(9px);padding:18px;min-height:0;box-shadow:inset 0 0 25px rgba(0,255,210,.025)}.garage-preview{display:flex;flex-direction:column;justify-content:end;align-items:center;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 23%,rgba(39,103,130,.24),transparent 45%),radial-gradient(ellipse at 50% 86%,rgba(0,255,196,.18),transparent 45%),linear-gradient(180deg,rgba(9,24,34,.98),rgba(3,10,17,.98) 60%,rgba(5,17,24,.99))}.glass-panel.garage-preview{backdrop-filter:none;-webkit-backdrop-filter:none}.garage-preview{cursor:grab;touch-action:none}.garage-preview.is-dragging{cursor:grabbing}
@@ -2748,7 +2748,7 @@ const TRACKS=[
  {name:'Neon City: After Dark',difficulty:'MEDIUM',length:1220,accent:'#31a5ff',accent2:'#86f4ff',glow:'#239cff',sky:'#05132a',kind:1,desc:'NIGHT MEGACITY · NEON WIREFRAME'},
  {name:'Metro Figure Eight',difficulty:'HARD',length:1300,accent:'#a277ff',accent2:'#00e4ff',glow:'#9264ff',sky:'#100b2d',kind:2,desc:'FIGURE-8 CITY CIRCUIT · GRADE-SEPARATED CROSSING'},
  {name:'Solar Rush',difficulty:'EXPERT',length:1100,accent:'#ffcc55',accent2:'#ff7a25',glow:'#ffb72f',sky:'#241306',kind:3,desc:'SUPERNOVA SPEEDWAY · MID-TRACK LOOP-THE-LOOP'},
- {name:'Nexus Tri-Flow Circuit',difficulty:'ELITE',length:4200,accent:'#00e7d0',accent2:'#36aaff',glow:'#00d9d0',sky:'#06182b',kind:4,day:false,desc:'ROUNDED THREE-LOBE CIRCUIT · HIGH-SPEED FLOW · NO ROAD OVERLAPS'},
+ {name:'Nexus Tri-Flow Circuit',difficulty:'ELITE',length:4200,accent:'#00e7d0',accent2:'#36aaff',glow:'#00d9d0',sky:'#06182b',kind:4,day:false,desc:'REFERENCE-TRACED TREFOIL · THREE GRADE-SEPARATED OVERPASSES · 3.95 KM'},
  {name:'Nexus Modular Circuit',difficulty:'EXPERT',length:3120,accent:'#18baff',accent2:'#ff8734',glow:'#18baff',sky:'#061321',kind:5,day:false,desc:'BRAIDED MODULAR SKYWAYS · FOUR ELEVATED OVER/UNDER MERGERS · 3.12 KM'},
  {name:'Skybridge Velocity',difficulty:'EXTREME',length:6170,accent:'#18baff',accent2:'#ff8734',glow:'#18baff',sky:'#061321',kind:6,day:false,desc:'MODULAR RAMP BRIDGES · ELEVATED RIDGE RUNS · 6.17 KM'},
  {name:'KNOTWORK: THE HAIRBALL',difficulty:'MYTHIC',length:6200,accent:'#00ff9a',accent2:'#00cfff',glow:'#00ffc8',sky:'#01070b',kind:7,day:false,desc:'COMPACT 3D KNOTWORK · FLAT START/FINISH RUNWAY · GRADE-SEPARATED CROSSINGS'},
@@ -2760,6 +2760,75 @@ const CUSTOM_TRACK_TAU=Math.PI*2;
 const customWrap=(v,m)=>((v%m)+m)%m;
 const customAngleDelta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
 const customSmooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t)};
+// Fixed 48-point centreline trace of the reference's three interlocking lobes.
+// The Catmull-Rom interpolation only smooths these authored points; it does not invent
+// a new layout. The apparent crossings in plan are separated vertically by 45m+.
+const NEXUS_TRACE_POINTS=[
+  [0.000, 36.000, 150.000],
+  [102.410, 47.863, 141.061],
+  [198.893, 57.920, 114.919],
+  [283.910, 64.640, 73.550],
+  [352.664, 67.000, 20.096],
+  [401.417, 64.640, -41.357],
+  [427.723, 57.920, -106.066],
+  [430.582, 47.863, -168.960],
+  [410.496, 36.000, -225.000],
+  [369.419, 24.137, -269.535],
+  [310.616, 14.080, -298.630],
+  [238.435, 7.360, -309.357],
+  [158.000, 5.000, -300.000],
+  [74.861, 7.360, -270.199],
+  [-5.384, 14.080, -220.985],
+  [-77.473, 24.137, -154.730],
+  [-136.832, 36.000, -75.000],
+  [-179.883, 47.863, 13.669],
+  [-204.277, 57.920, 106.066],
+  [-209.048, 64.640, 196.649],
+  [-194.664, 67.000, 279.904],
+  [-162.982, 64.640, 350.714],
+  [-117.107, 57.920, 404.696],
+  [-61.164, 47.863, 438.494],
+  [-0.000, 36.000, 450.000],
+  [61.164, 24.137, 438.494],
+  [117.107, 14.080, 404.696],
+  [162.982, 7.360, 350.714],
+  [194.664, 5.000, 279.904],
+  [209.048, 7.360, 196.649],
+  [204.277, 14.080, 106.066],
+  [179.883, 24.137, 13.669],
+  [136.832, 36.000, -75.000],
+  [77.473, 47.863, -154.730],
+  [5.384, 57.920, -220.985],
+  [-74.861, 64.640, -270.199],
+  [-158.000, 67.000, -300.000],
+  [-238.435, 64.640, -309.357],
+  [-310.616, 57.920, -298.630],
+  [-369.419, 47.863, -269.535],
+  [-410.496, 36.000, -225.000],
+  [-430.582, 24.137, -168.960],
+  [-427.723, 14.080, -106.066],
+  [-401.417, 7.360, -41.357],
+  [-352.664, 5.000, 20.096],
+  [-283.910, 7.360, 73.550],
+  [-198.893, 14.080, 114.919],
+  [-102.410, 24.137, 141.061]
+];
+const NEXUS_START_T=1.5*Math.PI;
+function nexusTraceCatmull(a,b,c,d,u,u2,u3){
+ return .5*(2*b+(-a+c)*u+(2*a-5*b+4*c-d)*u2+(-a+3*b-3*c+d)*u3);
+}
+function nexusTracePoint(t){
+ const count=NEXUS_TRACE_POINTS.length,u=customWrap(t,CUSTOM_TRACK_TAU)/CUSTOM_TRACK_TAU*count;
+ const i=Math.floor(u),f=u-i,f2=f*f,f3=f2*f;
+ const p0=NEXUS_TRACE_POINTS[(i-1+count)%count],p1=NEXUS_TRACE_POINTS[i%count];
+ const p2=NEXUS_TRACE_POINTS[(i+1)%count],p3=NEXUS_TRACE_POINTS[(i+2)%count];
+ return{
+  x:nexusTraceCatmull(p0[0],p1[0],p2[0],p3[0],f,f2,f3),
+  y:nexusTraceCatmull(p0[1],p1[1],p2[1],p3[1],f,f2,f3),
+  z:nexusTraceCatmull(p0[2],p1[2],p2[2],p3[2],f,f2,f3),
+  t:customWrap(t,CUSTOM_TRACK_TAU)
+ };
+}
 // KNOTWORK: a compact closed (3,5) torus-knot centreline. Its plan view braids
 // into a dense but readable hairball, while modest height changes separate crossings.
 // The start/finish tangent is stretched into a flat runway around station zero.
@@ -2786,20 +2855,7 @@ function knotworkCoursePoint(t){
 }
 function customTrackCenterAtT(index,t){
  if(index===4){
-  // NEXUS TRI-FLOW: rounded three-lobe clover route, rebuilt from the supplied reference.
-  // A positive-radius polar centreline forms one continuous simple closed curve:
-  // three broad outer lobes joined by deep, rounded inward transitions. Unlike a
-  // braided/knot route, it never crosses itself or relies on stacked road decks.
-  // The 0.42 threefold harmonic gives the reference its distinct trefoil silhouette;
-  // a very small second harmonic keeps the outline organic without creating pinches.
-  // The road's tightest centreline bend remains comfortably wider than the 21.14m
-  // pavement, so the inner/outer road edges cannot fold back over one another.
-  const c=Math.cos(t),sn=Math.sin(t);
-  const radius=1+.42*Math.cos(3*t+Math.PI/2)+.018*Math.sin(2*t-.22);
-  const x=565*radius*c;
-  const z=495*radius*sn;
-  const y=14+1.6*Math.sin(2*t+.18)+1.0*Math.sin(3*t-.38);
-  return{x,y,z,t};
+  return nexusTracePoint(t);
  }
  if(index===5){
   // Track 6: a braided canyon interchange. The centreline folds through several
@@ -2841,13 +2897,12 @@ for(let trackIndex=4;trackIndex<=7;trackIndex++){
 // Route lengths are measured from their complete 3D centrelines.
 TRACKS[4].length=Math.round(CUSTOM_TRACK_ARC_TABLE[4].total);
 TRACKS[7].length=Math.round(CUSTOM_TRACK_ARC_TABLE[7].total);
-// Track 5 originally began on the sharp outer star-point of Multi-Cross 7. That made
-// the starting grid look skewed and sent cars immediately into a hard bend. Rebase its
-// station zero 80m into a flatter, unobstructed stretch of the same closed route. This changes
-// only where the race begins; all seven grade-separated crossings remain in the layout.
-// Track 6 now starts on the near-straight, forward-facing section of its own braided route.
+// Track 5 starts at the high, low-curvature crest in the upper trefoil lobe. The station
+// offset is resolved from the same arc-length table used by the race, preview and collisions.
+// Track 6 retains its existing near-straight start on the braided route.
 // This removes the diagonal first-frame spawn that could wedge the car against the start grid.
-const CUSTOM_TRACK_START_OFFSETS={4:80,5:341.725,6:0,7:0};
+const NEXUS_START_SAMPLE=Math.round(NEXUS_START_T/CUSTOM_TRACK_TAU*4096);
+const CUSTOM_TRACK_START_OFFSETS={4:CUSTOM_TRACK_ARC_TABLE[4].distances[NEXUS_START_SAMPLE]/CUSTOM_TRACK_ARC_TABLE[4].total*TRACKS[4].length,5:341.725,6:0,7:0};
 function customTrackStartOffset(index){return CUSTOM_TRACK_START_OFFSETS[index]||0;}
 function customTrackCenter(index,station){
  const length=TRACKS[index].length,table=CUSTOM_TRACK_ARC_TABLE[index],target=customWrap(station+customTrackStartOffset(index),length)/length*table.total,d=table.distances,a=table.angles;
@@ -4001,7 +4056,12 @@ function buildWorld(index,force=false){
   const supportCol=index===4?[.045,.105,.135]:[.035,.085,.13],supportEm=index===4?[.008,.10,.13]:[.012,.12,.22];
   const addPylon=(station,side)=>{const f=customTrackFrame(index,station),h=f.center.y;if(h<3.0||f.U[1]<.52)return;const base=-h/f.U[1],x=side*11.65;b.box(x-.48,base,station-.72,x+.48,-.34,station+.72,supportCol,supportEm,6);b.box(x-.68,base+.14,station-.94,x+.68,base+.43,station+.94,[.12,.20,.25],[.018,.16,.22],2);};
   if(index===4){
-   // The redesigned course has no elevated crossings, so it needs no crossing pylons.
+   // Paired supports sit beneath the three high crests. Their plan positions are
+   // well clear of the other route segments, so no support pier cuts through a deck.
+   for(const t of [Math.PI/6,5*Math.PI/6,3*Math.PI/2]){
+    const st=customTrackStationAtT(index,t);
+    for(const side of [-1,1])addPylon(st,side);
+   }
   }else if(index===5){
    const station=customTrackStationAtT(index,Math.PI);for(const off of [-.12,.12])for(const side of [-1,1])addPylon(customTrackStationAtT(index,Math.PI+off),side);
    for(const side of [-1,1]){const x=side*15.2;b.box(x-.82,-.5,station-42,x+.82,17.5,station-40.4,[.045,.075,.14],[.018,.11,.35],6);b.box(x-.82,-.5,station+40.4,x+.82,17.5,station+42,[.045,.075,.14],[.018,.11,.35],6);b.box(x-1.15,17.1,station-42,x+1.15,18.0,station+42,[.12,.16,.26],[.02,.26,.48],2);}
@@ -4646,7 +4706,7 @@ function trackPreviewCamera(index){
   // Three-quarter cinematic view centered on Solar Rush's 72 m-high loop.
   // The previous view aimed beyond the stunt at the exit, so the card mostly showed buildings.
   if(index===3)return {eye:[62,51,342],target:[-15,35,437],fov:46};
-  if(index===4)return {eye:[0,455,-590],target:[0,4,0],fov:58};
+  if(index===4)return {eye:[0,790,-500],target:[0,36,0],fov:48};
   // Track 6 preview: move the camera 1.5x closer while preserving its original viewing direction.
   if(index===5)return {eye:[0,238,-346.67],target:[0,4,0],fov:56};
   if(index===6)return {eye:[0,440,-820],target:[0,42,0],fov:55};
