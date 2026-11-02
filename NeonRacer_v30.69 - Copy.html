@@ -2783,7 +2783,7 @@ const TRACKS=[
  {name:'Metro Figure Eight',difficulty:'HARD',length:1300,accent:'#a277ff',accent2:'#00e4ff',glow:'#9264ff',sky:'#100b2d',kind:2,desc:'FIGURE-8 CITY CIRCUIT · GRADE-SEPARATED CROSSING'},
  {name:'Solar Rush',difficulty:'EXPERT',length:1100,accent:'#ffcc55',accent2:'#ff7a25',glow:'#ffb72f',sky:'#241306',kind:3,desc:'SUPERNOVA SPEEDWAY · MID-TRACK LOOP-THE-LOOP'},
  {name:'Nexus Tri-Flow Circuit',difficulty:'ELITE',length:4200,accent:'#00e7d0',accent2:'#36aaff',glow:'#00d9d0',sky:'#06182b',kind:4,day:false,desc:'REFERENCE-TRACED TREFOIL · THREE GRADE-SEPARATED OVERPASSES · 3.95 KM'},
- {name:'Nexus Modular Circuit',difficulty:'EXPERT',length:3120,accent:'#18baff',accent2:'#ff8734',glow:'#18baff',sky:'#061321',kind:5,day:false,desc:'BRAIDED MODULAR SKYWAYS · FOUR ELEVATED OVER/UNDER MERGERS · 3.12 KM'},
+ {name:'Nexus Modular Circuit',difficulty:'EXPERT',length:3120,accent:'#18baff',accent2:'#ff8734',glow:'#18baff',sky:'#061321',kind:5,day:false,desc:'BRAIDED MODULAR SKYWAYS · SEVEN GRADE-SEPARATED CROSSINGS · 3.44 KM'},
  {name:'Skybridge Velocity',difficulty:'EXTREME',length:6170,accent:'#18baff',accent2:'#ff8734',glow:'#18baff',sky:'#061321',kind:6,day:false,desc:'MODULAR RAMP BRIDGES · ELEVATED RIDGE RUNS · 6.17 KM'},
  {name:'KNOTWORK: THE HAIRBALL',difficulty:'MYTHIC',length:6200,accent:'#00ff9a',accent2:'#00cfff',glow:'#00ffc8',sky:'#01070b',kind:7,day:false,desc:'COMPACT 3D KNOTWORK · FLAT START/FINISH RUNWAY · GRADE-SEPARATED CROSSINGS'},
 ];
@@ -2892,19 +2892,22 @@ function customTrackCenterAtT(index,t){
   return nexusTracePoint(t);
  }
  if(index===5){
-  // Track 6: a braided canyon interchange. The centreline folds through several
-  // broad lobes so the roadway visibly weaves over and under itself; height pulses
-  // lift each crossing into a separate deck rather than allowing road collisions.
-  // The course remains one continuous drivable route, with the visual geometry
-  // reading as repeated fork/merge-like sweeps around the elevated crossings.
-  const c=Math.cos(t),s=Math.sin(t);
-  // Half-scale the horizontal footprint while preserving the original braided
-  // route shape, corner sequence, banking and elevated crossing profiles.
-  const x=.5*(405*c+168*Math.cos(3*t+.28)+48*Math.sin(5*t-.35));
-  const z=.5*(310*s-126*Math.sin(3*t+.28)+34*Math.cos(5*t+.2));
+  // Track 6: a smooth braided modular interchange. A 2:3 Lissajous centreline
+  // creates broad, flowing lobes without the tiny end-curls in the previous route.
+  // Seven selected branches rise into separate decks at the over/under crossings.
+  // Its minimum horizontal bend radius is about 24.6 m, comfortably wider than
+  // the 21.14 m carriageway, and the raised approaches stay below an 18 degree grade.
+  const x=250*Math.sin(2*t);
+  const z=210*Math.sin(3*t);
   const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=d/w;return h*(1-u*u*(3-2*u));};
-  const y=20+12*Math.sin(2*t+.4)+7*Math.sin(5*t-.3)
-    +lift(.72,.34,58)+lift(2.56,.32,72)+lift(4.48,.34,62)+lift(5.62,.27,48);
+  const y=28+8*Math.sin(2*t+.3)+4*Math.sin(5*t-.2)
+    +lift(0,.36,24)
+    +lift(Math.PI/3,.36,22)
+    +lift(5*Math.PI/12,.36,22)
+    +lift(2*Math.PI/3,.36,25)
+    +lift(17*Math.PI/12,.36,28)
+    +lift(19*Math.PI/12,.36,27)
+    +lift(23*Math.PI/12,.36,24);
   return{x,y,z,t};
  }
  if(index===6){
@@ -2930,13 +2933,19 @@ for(let trackIndex=4;trackIndex<=7;trackIndex++){
 }
 // Route lengths are measured from their complete 3D centrelines.
 TRACKS[4].length=Math.round(CUSTOM_TRACK_ARC_TABLE[4].total);
+TRACKS[5].length=Math.round(CUSTOM_TRACK_ARC_TABLE[5].total);
 TRACKS[7].length=Math.round(CUSTOM_TRACK_ARC_TABLE[7].total);
-// Track 5 starts at the high, low-curvature crest in the upper trefoil lobe. The station
-// offset is resolved from the same arc-length table used by the race, preview and collisions.
-// Track 6 retains its existing near-straight start on the braided route.
-// This removes the diagonal first-frame spawn that could wedge the car against the start grid.
+// Track 5 starts at the high, low-curvature crest in the upper trefoil lobe.
+// Track 6 starts on a broad, nearly flat outer run so the grid is clear of its crossings.
+// Both offsets are measured from the same arc-length tables used by driving and collisions.
 const NEXUS_START_SAMPLE=Math.round(NEXUS_START_T/CUSTOM_TRACK_TAU*4096);
-const CUSTOM_TRACK_START_OFFSETS={4:CUSTOM_TRACK_ARC_TABLE[4].distances[NEXUS_START_SAMPLE]/CUSTOM_TRACK_ARC_TABLE[4].total*TRACKS[4].length,5:341.725,6:0,7:0};
+const TRACK6_START_T=5.42;
+const TRACK6_START_SAMPLE=Math.round(TRACK6_START_T/CUSTOM_TRACK_TAU*4096);
+const CUSTOM_TRACK_START_OFFSETS={
+  4:CUSTOM_TRACK_ARC_TABLE[4].distances[NEXUS_START_SAMPLE]/CUSTOM_TRACK_ARC_TABLE[4].total*TRACKS[4].length,
+  5:CUSTOM_TRACK_ARC_TABLE[5].distances[TRACK6_START_SAMPLE]/CUSTOM_TRACK_ARC_TABLE[5].total*TRACKS[5].length,
+  6:0,7:0
+};
 function customTrackStartOffset(index){return CUSTOM_TRACK_START_OFFSETS[index]||0;}
 function customTrackCenter(index,station){
  const length=TRACKS[index].length,table=CUSTOM_TRACK_ARC_TABLE[index],target=customWrap(station+customTrackStartOffset(index),length)/length*table.total,d=table.distances,a=table.angles;
