@@ -2468,7 +2468,7 @@ function rcGetVehicleLampMeshes(asset){
   if(asset.__lampMeshes)return asset.__lampMeshes;
   const d=asset.dimensions||[],w=d[0]||1.8,h=d[1]||1.3,l=d[2]||4.8,id=Number.isInteger(asset.carId)?asset.carId:0;
   const headLens=[],headCore=[];
-  const rearZ=-l*.5-.002,frontZ=l*.5+.018;
+  const rearZ=l*.5+.002,frontZ=-l*.5-.018;
   // Shared front-light accents; the two retained McLaren GLBs keep their own rear lamp geometry.
   for(const side of[-1,1]){
     headLens.push([[side*w*.155,h*.535,frontZ],[side*w*.385,h*.565,frontZ],[side*w*.435,h*.515,frontZ],[side*w*.405,h*.455,frontZ],[side*w*.180,h*.438,frontZ],[side*w*.135,h*.475,frontZ]]);
@@ -2523,10 +2523,11 @@ function rcDrawInstance(camera, target, x, z, yaw, fovDeg, vehicleId=0, haloExpa
   const id=Math.max(0,Math.min(RC_CAR_CATALOG.length-1,Number(vehicleId)||0));
   const asset=rcCarAssets[id];if(!asset||!rcProgram)return;
   const routePoint=rcTrackRoutePoint(z,x),rs=window.__realCarState,up=(rs&&rs.racing&&Array.isArray(rs.cameraUp))?rs.cameraUp:[0,1,0],view=rcLookAt(camera,target,up),proj=rcPerspective(fovDeg*Math.PI/180,rcCurrentAspect(),0.1,6500),pitch=Number.isFinite(routePoint.pitch)?routePoint.pitch:0,upX=Number.isFinite(routePoint.upX)?routePoint.upX:0,upY=Number.isFinite(routePoint.upY)?routePoint.upY:Math.cos(pitch),upZ=Number.isFinite(routePoint.upZ)?routePoint.upZ:Math.sin(pitch);
-  // The Senna GLB's nose points along local -Z, unlike the other production cars.
-  // Its home-screen framing already applies this offset; apply it in races too,
-  // for the player and AI, so the Senna's nose follows the route instead of trailing it.
-  const modelYaw=yaw+((rs&&rs.racing&&id===0)?Math.PI:0);
+  // The race vehicle coordinate frame is calibrated with the nose along local -Z.
+  // Apply one shared 180-degree correction to every loaded model while racing,
+  // so the entire selectable roster faces along the route tangent. Menu/showroom
+  // orientations remain untouched.
+  const modelYaw=yaw+((rs&&rs.racing)?Math.PI:0);
   const model=(routePoint.widthX!==undefined?(rcTrackFrameModel(routePoint,modelYaw,1,1,1,groundOffset)||rcModel(routePoint.x+groundOffset*upX,routePoint.y+groundOffset*upY,routePoint.z+groundOffset*upZ,modelYaw+routePoint.heading,1,1,1,pitch)):rcModel(routePoint.x+groundOffset*upX,routePoint.y+groundOffset*upY,routePoint.z+groundOffset*upZ,modelYaw+routePoint.heading,1,1,1,pitch)),mvp=rcMul(proj,rcMul(view,model));
   rcGL.uniformMatrix4fv(rcGL.getUniformLocation(rcProgram,'uMVP'),false,mvp);
   rcGL.uniformMatrix4fv(rcGL.getUniformLocation(rcProgram,'uModel'),false,model);
