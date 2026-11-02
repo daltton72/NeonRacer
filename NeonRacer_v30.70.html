@@ -2649,7 +2649,7 @@ function rcRender(){requestAnimationFrame(rcRender);const rotationNow=performanc
   }else{
      // Garage uses its own lit showroom and reflective floor; other menus retain their existing framing.
      if(inShowroom){const target=[0,0.58,0],eye=[4.55,2.10,5.55],zoom=Math.max(0,Math.min(0.36,(window.__paintPreviewZoom||0)*0.15));for(let zi=0;zi<3;zi++)eye[zi]=target[zi]+(eye[zi]-target[zi])*(1-zoom);rcDrawGarageStudio(eye,target);/* Shared showroom preview for garage and paint lab; model dimensions and ride height stay unchanged. */const garageCarId=window.__selectedCarId||0;const garageRideHeight=0.14;rcDrawInstance(eye,target,0,0,window.__garageYaw||0,25,garageCarId,0,garageRideHeight,{player:true});}
-     else {const homeCarId=window.__selectedCarId||0;const homeModelYaw=(homeCarId===0?Math.PI:0)+Math.PI;rcDrawInstance([5.8,2.65,7.0],[0,0.68,0],0,0,homeModelYaw,32,homeCarId,0,0,{player:true});}
+     else {const homeCarId=window.__selectedCarId||0;const homeModelYaw=0;rcDrawInstance([5.8,2.65,7.0],[0,0.68,0],0,0,homeModelYaw,32,homeCarId,0,0,{player:true});}
    }
   }catch(e){window.__realCarRenderError=String(e&&e.message||e);console.error('Real car model render:',e);}
 }
