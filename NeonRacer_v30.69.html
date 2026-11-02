@@ -1274,8 +1274,9 @@ async function rcParseCarGLB(bytes,baseUrl,carId,targetLengthOverride=null){
     const fullX=Math.max(1e-6,maxX-minX),fullY=Math.max(1e-6,maxY-minY),fullZ=Math.max(1e-6,maxZ-minZ);
     for(let i=rawPrims.length-1;i>=0;i--){
       const rp=rawPrims[i],name=String(rp.sourceName||''),b=rp.bounds;
-      const namedFloor=/(ground|floor|shadow|stage|platform|pedestal|turntable|backdrop|display[ _-]?base)/i.test(name);
-      const namedPlane=/(^|[\\s._-])plane(?:$|[\\s._-])/i.test(name);
+      const namedFloor=/(ground|shadow|stage|platform|pedestal|turntable|backdrop|display[ _-]?base)/i.test(name);
+      const namedPlane=/(^|[\s._-])plane(?:$|[\s._-])/i.test(name);
+      const namedCarFloor=/\bfloor\b/i.test(name);
       const spanX=b.maxX-b.minX,spanY=b.maxY-b.minY,spanZ=b.maxZ-b.minZ;
       const flat=spanY<=Math.max(fullX,fullZ)*.0035;
       const broad=spanX>=fullX*.55&&spanZ>=fullZ*.55;
@@ -1284,7 +1285,7 @@ async function rcParseCarGLB(bytes,baseUrl,carId,targetLengthOverride=null){
       const pbr=(materials[rp.material]||{}).pbrMetallicRoughness||{};
       const color=pbr.baseColorFactor||[1,1,1,1],rgb=color.slice(0,3);
       const darkNeutral=Math.max(...rgb)<.52&&(Math.max(...rgb)-Math.min(...rgb))<.18;
-      const flatScenePlate=flat&&broad&&low&&simple&&(namedPlane||darkNeutral);
+      const flatScenePlate=flat&&broad&&low&&simple&&(namedPlane||namedCarFloor||darkNeutral);
       if(namedFloor||flatScenePlate){
         excludedScenePrimitives.push({name:name||'(unnamed)',reason:namedFloor?'named scene-floor primitive':'low flat rectangular plate',vertices:rp.vertexCount});
         rawPrims.splice(i,1);
