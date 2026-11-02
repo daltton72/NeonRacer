@@ -3042,9 +3042,9 @@ const save=()=>{try{localStorage.setItem('neon-racer-3d-save',JSON.stringify(sta
 function track(){return TRACKS[state.selectedTrack]}
 function car(){return CARS[state.selectedCar]}
 function effectiveHandling(c=car()){return (c.handling||1)+(Number(state.upgrades.tires)||0)*.065}
-function wetGripMultiplier(){return race&&race.active?(state.selectedTrack===5?.84:(state.selectedTrack===6?.89:1)):1}
+function wetGripMultiplier(){return race&&race.active?(state.selectedTrack===5?.92:(state.selectedTrack===6?.89:1)):1}
 function effectiveGrip(c=car()){return clamp((c.grip||1)+(Number(state.upgrades.tires)||0)*.075,.75,1.62)*wetGripMultiplier()}
-function effectiveBraking(c=car()){const wetBrake=state.selectedTrack===5?.89:(state.selectedTrack===6?.93:1);return clamp((c.braking||1)*(1+(Number(state.upgrades.tires)||0)*.055),.72,1.62)*(race&&race.active?wetBrake:1)}
+function effectiveBraking(c=car()){const wetBrake=state.selectedTrack===5?.95:(state.selectedTrack===6?.93:1);return clamp((c.braking||1)*(1+(Number(state.upgrades.tires)||0)*.055),.72,1.62)*(race&&race.active?wetBrake:1)}
 function effectiveAcceleration(c=car()){return clamp(.88+(((c.accel||100)-78)*.004),.84,1.18)*(1+(Number(state.upgrades.engine)||0)*.07)}
 function effectiveTopSpeed(c=car()){return (c.top||0)+(Number(state.upgrades.engine)||0)*65}
 function effectiveNitro(c=car()){return (c.nitro||1)*(1+(Number(state.upgrades.nitro)||0)*.05)}
@@ -3818,7 +3818,7 @@ function buildWorld(index,force=false){
  if(!force&&worldGeometryCache[index]){activateWorldCache(index);worldVersion++;if(!window.__buildingTrackPreviewCache)buildBoost();return;}
  activeGeometryTrackIndex=index>=4?index:-1;
  portalGateMeshes=[];
- const t=TRACKS[index],rand=makeRandom(82341+index*1771),b=new Builder(),beamBuilder=new Builder(),poolBuilder=new Builder(),accent=hex(t.accent),accent2=hex(t.accent2),ringAccent=index===2?[.015,.98,.90]:accent,ringAccent2=index===2?[.34,.88,1.0]:accent2,daylight=!!t.day,dark=daylight?[.16,.21,.24]:[.009,.025,.039],metal=daylight?[.24,.29,.32]:[.018,.06,.075],glass=daylight?[.08,.19,.25]:[.018,.12,.16];const figure8Circuit=index===2,customCircuit=index>=4;const zmin=(figure8Circuit||customCircuit)?0:-360,zmax=(figure8Circuit||customCircuit)?t.length:4250,curveStep=customCircuit?(index===7?2.0:4.0):(index===3?2.0:6);let solarLoopSupportMesh=null;
+ const t=TRACKS[index],rand=makeRandom(82341+index*1771),b=new Builder(),beamBuilder=new Builder(),poolBuilder=new Builder(),accent=hex(t.accent),accent2=hex(t.accent2),ringAccent=index===2?[.015,.98,.90]:accent,ringAccent2=index===2?[.34,.88,1.0]:accent2,daylight=!!t.day,dark=daylight?[.16,.21,.24]:[.009,.025,.039],metal=daylight?[.24,.29,.32]:[.018,.06,.075],glass=daylight?[.08,.19,.25]:[.018,.12,.16];const figure8Circuit=index===2,customCircuit=index>=4;const zmin=(figure8Circuit||customCircuit)?0:-360,zmax=(figure8Circuit||customCircuit)?t.length:4250,curveStep=customCircuit?((index===5||index===7)?2.0:4.0):(index===3?2.0:6);let solarLoopSupportMesh=null;
  // Add dense vertices where the road bends through the three vertical loops, but leave the
  // straight boulevard and static street furniture at the original economical segmentation.
  const routeMeshEnd=(zz,end)=>{let step=curveStep,nextBoundary=end;if(index===3){for(const st of solarLoopStarts()){const lo=st-18,hi=st+SOLAR_LOOP_LENGTH+SOLAR_LOOP_EXIT_MERGE+18;if(zz>=lo-1e-5&&zz<hi-1e-5)step=Math.min(step,.55);if(lo>zz+1e-5)nextBoundary=Math.min(nextBoundary,lo);if(hi>zz+1e-5)nextBoundary=Math.min(nextBoundary,hi);}}const next=Math.min(zz+step,nextBoundary,end);return next>zz+1e-5?next:Math.min(zz+curveStep,end)};
