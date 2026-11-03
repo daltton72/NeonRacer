@@ -2254,7 +2254,7 @@ function rcDrawKnotworkCentralTower(view,proj,eye,windowScale=1){
         if(value>.64)continue;
         const y=18+row*24,offset=(col-(cols-1)*.5)*((alongX?q.d:q.w)/cols);
         const warm=value<.18,winColor=warm?[1.0,.66,.30]:[.18,.86,1.0];
-        const emission=warm?[1.15,.48,.12]:[.10,.78,1.25];
+        const emission=(warm?[1.15,.48,.12]:[.10,.78,1.25]).map(v=>v*(1+0.32*(windowScale-1)));
         if(alongX){
           const x=q.x+offset,z=q.z+side*(q.d*.505+.065);
           glow(x,y,z,Math.max(2.8,q.w*.062)*windowScale,6.2*windowScale,.24,winColor,emission);
@@ -2787,7 +2787,7 @@ function rcRender(){requestAnimationFrame(rcRender);const rotationNow=performanc
     rcGL.viewport(vx,vy,vw,vh);rcGL.scissor(vx,vy,vw,vh);rcGL.clearColor(0,0,0,0);rcGL.clear(rcGL.COLOR_BUFFER_BIT|rcGL.DEPTH_BUFFER_BIT);
     const cam=window.__neonTrackPreviewCamera(i);window.__previewRouteTrackIndex=i;rcPreviewAspect=vw/Math.max(1,vh);
     rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uSceneMode'),2);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTrackIndex'),i);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uCarMode'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloPass'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloExpand'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uNitro'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTime'),performance.now()*.001);
-    if(i<4)rcDrawCityBuildings(cam.eye,cam.target,cam.fov,i);else if(i===7)rcDrawKnotworkTowerScene(cam.eye,cam.target,cam.fov,[0,1,0],16000,1.85);
+    if(i<4)rcDrawCityBuildings(cam.eye,cam.target,cam.fov,i);else if(i===7)rcDrawKnotworkTowerScene(cam.eye,cam.target,cam.fov,[0,1,0],16000,3.0);
     // Track selection previews show scenery only. Do not draw a vehicle at the start line;
     // the actual selected car and starting grid remain unchanged in gameplay.
    }
