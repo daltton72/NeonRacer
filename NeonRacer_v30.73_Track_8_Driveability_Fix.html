@@ -2869,12 +2869,13 @@ function nexusTracePoint(t){
   t:customWrap(t,CUSTOM_TRACK_TAU)
  };
 }
-// KNOTWORK: a compact closed (3,5) torus-knot centreline. Its plan view braids
-// into a dense but readable hairball, while modest height changes separate crossings.
+// KNOTWORK: a softened (3,5) torus-knot centreline. A wider major radius and
+// shallower minor radius open the tightest lobes into broader, more drivable turns.
 // The start/finish tangent is stretched into a flat runway around station zero.
+// Reduced lateral oscillation widens the tightest corners without changing the route topology.
 const KNOTWORK_P=3, KNOTWORK_Q=5;
-const KNOTWORK_MAJOR=185, KNOTWORK_MINOR=132;
-const KNOTWORK_SCALE_X=1.00, KNOTWORK_SCALE_Y=.58, KNOTWORK_SCALE_Z=1.08;
+const KNOTWORK_MAJOR=215, KNOTWORK_MINOR=94;
+const KNOTWORK_SCALE_X=.98, KNOTWORK_SCALE_Y=.58, KNOTWORK_SCALE_Z=1.04;
 const KNOTWORK_FLAT_HALF_ANGLE=.54; // 3x the original flat start/finish runway length
 const KNOTWORK_TANGENT_LENGTH=Math.hypot(KNOTWORK_MINOR*KNOTWORK_Q,KNOTWORK_P*(KNOTWORK_MAJOR+KNOTWORK_MINOR));
 const KNOTWORK_BASIS_A=KNOTWORK_MINOR*KNOTWORK_Q/KNOTWORK_TANGENT_LENGTH;
@@ -2982,7 +2983,7 @@ function customTrackStationAtT(index,t){
 function customTrackBank(index,t,station=0){
  if(index===4)return .065*Math.sin(3*t+.25)+.025*Math.sin(5*t-.2);
  if(index===5)return .17*Math.sin(2*t+.25);
- if(index===7)return .10*Math.sin(5*t+.35)+.055*Math.sin(9*t-.72)+.025*Math.sin(13*t+1.1);
+ if(index===7)return .035*Math.sin(3*t+.35)+.015*Math.sin(5*t-.72);
  return .13*Math.sin(3*t+.2)+.06*Math.sin(7*t-.3);
 }
 function customTrackFrame(index,station){
