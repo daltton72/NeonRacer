@@ -718,6 +718,20 @@ body.track-preview-active #fx{background:transparent}
 .paint-shop-flow-slot{box-sizing:border-box;visibility:hidden!important;pointer-events:none!important;}
 @media(prefers-reduced-motion:reduce){#carPaintPanel.is-portaled{scroll-behavior:auto!important}}
 </style>
+
+<style id="upgrade-performance-profile">
+#upgradesScreen .upgrade-profile-panel{flex:0 0 auto;width:100%;padding:12px 16px 11px;border:1px solid rgba(0,255,210,.30);background:linear-gradient(110deg,rgba(0,22,31,.82),rgba(0,10,18,.78));box-shadow:inset 0 0 22px rgba(0,255,210,.035)}
+#upgradesScreen .upgrade-profile-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:8px}
+#upgradesScreen .upgrade-profile-heading .stats-title{margin:0;font-size:11px;letter-spacing:.17em;color:#dffff9}
+#upgradesScreen .upgrade-profile-car{margin-top:4px;color:#80d8d4;font-size:9px;letter-spacing:.12em}
+#upgradesScreen .upgrade-profile-summary{color:#00ffc8;font-size:10px;font-weight:800;letter-spacing:.08em;text-align:right}
+#upgradesScreen .upgrade-profile-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 16px;align-items:center}
+#upgradesScreen .upgrade-profile-stat-label{display:flex;justify-content:space-between;gap:5px;margin-bottom:5px;color:#c9f8ef;font-size:8px;letter-spacing:.055em}
+#upgradesScreen .upgrade-profile-stat-label b{color:#00ffc8;font-size:9px}
+#upgradesScreen .upgrade-profile-stat .bar{height:5px}
+#upgradesScreen .upgrade-profile-details{grid-column:1/-1;color:#75c9c8;font-size:8px;letter-spacing:.09em;line-height:1.6}
+@media(max-width:760px){#upgradesScreen .upgrade-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px}#upgradesScreen .upgrade-profile-details{grid-column:1/-1}#upgradesScreen .upgrade-profile-panel{padding:10px}#upgradesScreen .upgrade-profile-summary{font-size:8px}}
+</style>
 </head>
 <body>
 <canvas id="world" aria-label="NEON RACER 3D racing world"></canvas><canvas id="realCarLayer" aria-hidden="true"></canvas><canvas id="vehicleLightFX" aria-hidden="true"></canvas><div id="fx"></div><div id="modelAssetStatus" role="status" style="display:none;position:fixed;left:50%;top:68px;transform:translateX(-50%);z-index:5;max-width:calc(100vw - 32px);padding:10px 14px;border:1px solid rgba(255,110,110,.7);background:rgba(25,5,8,.94);color:#ffd5d5;font:600 11px/1.45 system-ui,sans-serif;letter-spacing:.04em;text-align:center;pointer-events:none"></div>
@@ -742,6 +756,7 @@ body.track-preview-active #fx{background:transparent}
 <section class="screen" id="tracksScreen"><div class="page-layout"><div class="page-heading"><div><h1>Track selection</h1><p>Eight circuits. One finish line.</p></div><button class="back" data-home>← Back</button></div><div class="track-grid" id="trackGrid"></div><div class="actions"><div class="chip">SELECTED <b id="selectedTrackName">NEON CITY</b></div><div class="mode-actions"><button class="neon-btn" id="trackRaceBtn">RACE THIS TRACK&nbsp; →</button></div></div></div></section>
 <section class="screen" id="garageScreen"><div class="page-layout"><div class="page-heading"><div><h1>Garage</h1><p>Choose your line. Own the night.</p></div><button class="back" data-home>← Back</button></div><div class="two-col"><div class="glass-panel garage-preview"><div class="garage-name" id="garageCarName">VOLT S7</div><div class="garage-spec" id="garageSpec">BALANCED HYPERCOUPE · CLASS S</div><div class="car-choice" id="carChoice"></div></div><div class="glass-panel stats-panel"><h3 class="stats-title">PERFORMANCE PROFILE</h3><div id="garageStats"></div><div style="height:15px"></div><button class="neon-btn primary" style="width:100%;text-align:center" id="garageSelectBtn">SELECT VEHICLE</button></div></div></div></section>
 <section class="screen" id="upgradesScreen"><div class="page-layout"><div class="page-heading"><div><h1>Performance lab</h1><p>Permanent upgrades · stackable performance</p></div><button class="back" data-home>← Back</button></div><div class="upgrade-grid" id="upgradeGrid"></div>
+<div class="glass-panel upgrade-profile-panel" id="upgradeStatsPanel"><div class="upgrade-profile-heading"><div><h3 class="stats-title">PERFORMANCE PROFILE</h3><div id="upgradeProfileCar" class="upgrade-profile-car"></div></div><div id="upgradeProfileSummary" class="upgrade-profile-summary"></div></div><div id="upgradeProfileStats" class="upgrade-profile-stats"></div></div>
 <div class="paint-shop glass-panel" id="carPaintPanel">
  <button class="paint-shop-tab" id="paintShopToggle" type="button" aria-expanded="false" aria-controls="paintShopBody">
   <span class="paint-can-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M15 10h18l3 7v23H12V17l3-7Z"/><path d="M18 10V6h12v4M12 18h24M18 24h12M18 30h8"/><path d="m31 6 7-3 3 5-8 3"/></svg></span>
@@ -3414,6 +3429,22 @@ function renderGarage(){
  $('#garageStats').innerHTML=vals.map(([n,v])=>`<div class="stat-line"><span>${n}</span><div class="bar"><i style="width:${v*10}%"></i></div><b>${v}/10</b></div>`).join('')+
  `<div style="margin-top:18px;padding:12px 10px;border:1px solid rgba(0,255,210,.28);background:rgba(0,17,25,.58);color:#d7fff8;font-size:11px;line-height:1.8;letter-spacing:.08em"><b style="color:#00ffc8">BASE TOP SPEED</b> &nbsp; ${Math.round(car().topMph)} MPH<br><b style="color:#00ffc8">UPGRADED TOP SPEED</b> &nbsp; ${upgradedMph} MPH<div style="margin-top:4px;color:#74d4d2;font-size:9px">ENGINE LEVEL ${engineLv+1} · TIRES LEVEL ${tiresLv+1} · NITRO LEVEL ${nitroLv+1}</div><div style="margin-top:3px;color:#74d4d2;font-size:9px">BRAKE FORCE ${(effectiveBraking(car())*100).toFixed(0)}% · GRIP ${(effectiveGrip(car())*100).toFixed(0)}%</div></div>`;
 }
+function renderUpgradePerformanceProfile(){
+ const c=car(),engineLv=Number(state.upgrades.engine)||0,tiresLv=Number(state.upgrades.tires)||0,nitroLv=Number(state.upgrades.nitro)||0;
+ const upgradedMph=Math.round(c.topMph+engineLv*65/8.04672);
+ const vals=[
+  ['SPEED',clamp(Math.round((upgradedMph-70)/8)+1,1,10)],
+  ['ACCELERATION',clamp(Math.round((c.accel-65)/5+engineLv*.45),1,10)],
+  ['HANDLING / GRIP',clamp(Math.round(5+(effectiveHandling(c)-.75)*6+(effectiveGrip(c)-1)*1.4),1,10)],
+  ['BRAKING',clamp(Math.round(effectiveBraking(c)*6),1,10)],
+  ['NITRO',clamp(Math.round(c.nitro*6+nitroLv*.45),1,10)]
+ ];
+ $('#upgradeProfileCar').textContent=c.name.toUpperCase();
+ $('#upgradeProfileSummary').innerHTML='BASE '+Math.round(c.topMph)+' MPH &nbsp; / &nbsp; UPGRADED '+upgradedMph+' MPH';
+ $('#upgradeProfileStats').innerHTML=vals.map(([n,v])=>`<div class="upgrade-profile-stat"><div class="upgrade-profile-stat-label"><span>${n}</span><b>${v}/10</b></div><div class="bar"><i style="width:${v*10}%"></i></div></div>`).join('')+
+  `<div class="upgrade-profile-details">ENGINE LV ${engineLv+1} &nbsp;·&nbsp; TIRES LV ${tiresLv+1} &nbsp;·&nbsp; NITRO LV ${nitroLv+1}<br>BRAKE FORCE ${(effectiveBraking(c)*100).toFixed(0)}% &nbsp;·&nbsp; GRIP ${(effectiveGrip(c)*100).toFixed(0)}%</div>`;
+}
+
 const CAR_PAINT_OPTIONS=[
   {name:'RACING RED',color:'#e51c3d'},{name:'ARCTIC WHITE',color:'#f1f5f7'},{name:'OBSIDIAN',color:'#111820'},{name:'ELECTRIC BLUE',color:'#075de8'},{name:'NEON MINT',color:'#00e6a0'},{name:'VOLT GREEN',color:'#78e000'},{name:'SUNSET ORANGE',color:'#ff641f'},{name:'GRAPHITE',color:'#59636d'},
   {name:'CRIMSON',color:'#9f102c'},{name:'PEARL',color:'#dce7e9'},{name:'MIDNIGHT BLUE',color:'#102447'},{name:'TURQUOISE',color:'#00aeb0'},{name:'ACID LIME',color:'#b5ed16'},{name:'BURNT ORANGE',color:'#a9572b'},{name:'ROYAL PURPLE',color:'#48208c'},{name:'TITANIUM',color:'#87969d'},
@@ -3618,7 +3649,7 @@ function syncPaintShopCardSize(){
 }
 window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(window.__paintPanelPortal&&$('#carPaintPanel')?.classList.contains('open')){const p=$('#carPaintPanel'),home=window.__paintPanelPortal.closedRect,mobile=innerWidth<=760;p.style.setProperty('width',Math.max(home.width,innerWidth-home.left-(mobile?12:20))+'px','important');p.style.setProperty('height',Math.max(160,Math.min(mobile?clamp(innerHeight*.32,218,270):clamp(innerHeight*.27,218,270),innerHeight-home.top-12))+'px','important');p.style.setProperty('min-height',p.style.height,'important');p.style.setProperty('max-height',p.style.height,'important');}else syncPaintShopCardSize();}),{passive:true});
 window.addEventListener('pagehide',()=>{if(window.__paintPanelPortal)restorePaintPanelHome($('#carPaintPanel'),true);});
-function renderUpgrades(){const root=$('#upgradeGrid'),paintPanel=$('#carPaintPanel');closePaintShop(false);root.innerHTML='';UPGRADE_DEFS.forEach(u=>{const lvl=state.upgrades[u.key];const cost=u.cost*(lvl+1);let d=document.createElement('div');d.className='upgrade-card';d.innerHTML=`<div class="u-icon">${u.icon}</div><h3>${u.name.toUpperCase()}</h3><p>${u.desc}</p><small>LEVEL ${lvl+1} / ${u.max+1}</small><button class="neon-btn ${state.credits>=cost&&lvl<u.max?'primary':''}" ${lvl>=u.max?'disabled':''}>${lvl>=u.max?'MAX LEVEL':'UPGRADE · '+cost.toLocaleString()}</button>`;d.querySelector('button').onclick=()=>{if(lvl>=u.max||state.credits<cost){toast(lvl>=u.max?'UPGRADE MAXED':'NOT ENOUGH CREDITS');return}state.credits-=cost;state.upgrades[u.key]++;save();renderUpgrades();$('#creditsTop').textContent=state.credits.toLocaleString()};root.appendChild(d)});if(paintPanel&&(paintPanel.parentElement!==root.parentElement||paintPanel.previousElementSibling!==root))root.insertAdjacentElement('afterend',paintPanel);syncPaintShopCardSize();renderCarPaint();$('#upgradeCredits').textContent=state.credits.toLocaleString();}
+function renderUpgrades(){const root=$('#upgradeGrid'),paintPanel=$('#carPaintPanel');closePaintShop(false);root.innerHTML='';UPGRADE_DEFS.forEach(u=>{const lvl=state.upgrades[u.key];const cost=u.cost*(lvl+1);let d=document.createElement('div');d.className='upgrade-card';d.innerHTML=`<div class="u-icon">${u.icon}</div><h3>${u.name.toUpperCase()}</h3><p>${u.desc}</p><small>LEVEL ${lvl+1} / ${u.max+1}</small><button class="neon-btn ${state.credits>=cost&&lvl<u.max?'primary':''}" ${lvl>=u.max?'disabled':''}>${lvl>=u.max?'MAX LEVEL':'UPGRADE · '+cost.toLocaleString()}</button>`;d.querySelector('button').onclick=()=>{if(lvl>=u.max||state.credits<cost){toast(lvl>=u.max?'UPGRADE MAXED':'NOT ENOUGH CREDITS');return}state.credits-=cost;state.upgrades[u.key]++;save();renderUpgrades();$('#creditsTop').textContent=state.credits.toLocaleString()};root.appendChild(d)});if(paintPanel&&(paintPanel.parentElement!==root.parentElement||paintPanel.previousElementSibling!==root))root.insertAdjacentElement('afterend',paintPanel);renderUpgradePerformanceProfile();syncPaintShopCardSize();renderCarPaint();$('#upgradeCredits').textContent=state.credits.toLocaleString();}
 $('#applyCustomCarPaint').onclick=()=>{const color=$('#customCarPaint').value,id=String(state.selectedCar),previous=paintTone(),shade=previous.shade,finalColor=shadePaint(color,shade);playPaintCanSfxForColor(finalColor,true,()=>{state.carPaintTone[id]={base:color,shade};applyCarPaint(finalColor);});};
 $('#restoreFactoryPaint').onclick=()=>{playPaintCanSfxForColor('#e51c3d',true,()=>{delete state.carPaint[String(state.selectedCar)];delete state.carPaintTone[String(state.selectedCar)];window.__neonCarPaintById=state.carPaint;save();renderCarPaint();});};
 $('#paintShopToggle').onclick=()=>{const panel=$('#carPaintPanel');if(!panel)return;if(panel.classList.contains('open'))closePaintShop(true);else openPaintShop();};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#carPaintPanel')?.classList.contains('open'))closePaintShop(true);});
