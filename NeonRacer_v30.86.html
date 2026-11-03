@@ -2243,7 +2243,7 @@ function rcDrawKnotworkCentralTower(view,proj,eye,windowScale=1){
   // selection preview and the race scene, so this brighter facade treatment appears in both.
   // A stable per-window hash gives a varied, inhabited look without flickering between frames.
   for(let i=0;i<towers.length;i++){
-    const q=towers[i],faceX=eye[0]>=q.x?1:-1,faceZ=eye[2]>=q.z?1:-1;
+    const q=towers[i],faceX=eye[0]>=q.x?-1:1,faceZ=eye[2]>=q.z?-1:1;
     const rows=Math.floor((q.h-28)/24);
     for(let face=0;face<2;face++){
       const alongX=face===0,side=alongX?faceX:faceZ;
