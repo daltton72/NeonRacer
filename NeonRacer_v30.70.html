@@ -2869,28 +2869,18 @@ function nexusTracePoint(t){
   t:customWrap(t,CUSTOM_TRACK_TAU)
  };
 }
-// KNOTWORK: a compact closed (3,5) torus-knot centreline. Its plan view braids
-// into a dense but readable hairball, while modest height changes separate crossings.
-// The start/finish tangent is stretched into a flat runway around station zero.
-const KNOTWORK_P=3, KNOTWORK_Q=5;
-const KNOTWORK_MAJOR=185, KNOTWORK_MINOR=132;
-const KNOTWORK_SCALE_X=1.00, KNOTWORK_SCALE_Y=.58, KNOTWORK_SCALE_Z=1.08;
-const KNOTWORK_FLAT_HALF_ANGLE=.54; // 3x the original flat start/finish runway length
-const KNOTWORK_TANGENT_LENGTH=Math.hypot(KNOTWORK_MINOR*KNOTWORK_Q,KNOTWORK_P*(KNOTWORK_MAJOR+KNOTWORK_MINOR));
-const KNOTWORK_BASIS_A=KNOTWORK_MINOR*KNOTWORK_Q/KNOTWORK_TANGENT_LENGTH;
-const KNOTWORK_BASIS_B=KNOTWORK_P*(KNOTWORK_MAJOR+KNOTWORK_MINOR)/KNOTWORK_TANGENT_LENGTH;
-const KNOTWORK_RUNWAY_HEIGHT=2*(KNOTWORK_MAJOR+KNOTWORK_MINOR)*KNOTWORK_SCALE_Y+20;
-function knotworkCoursePoint(t){
- const a=customWrap(t,CUSTOM_TRACK_TAU),rad=KNOTWORK_MAJOR+KNOTWORK_MINOR*Math.cos(KNOTWORK_Q*a);
- const rawX=rad*Math.cos(KNOTWORK_P*a),rawY=KNOTWORK_MINOR*Math.sin(KNOTWORK_Q*a),rawZ=rad*Math.sin(KNOTWORK_P*a);
- const signed=a>Math.PI?a-CUSTOM_TRACK_TAU:a,abs=Math.abs(signed);
- let settle=1;
- if(abs<=KNOTWORK_FLAT_HALF_ANGLE)settle=0;
- else if(abs<KNOTWORK_FLAT_HALF_ANGLE*2){const u=(abs-KNOTWORK_FLAT_HALF_ANGLE)/KNOTWORK_FLAT_HALF_ANGLE;settle=u*u*(3-2*u);}
- const x=(-KNOTWORK_BASIS_B*rawY+KNOTWORK_BASIS_A*rawZ)*KNOTWORK_SCALE_X*settle;
- const naturalY=KNOTWORK_RUNWAY_HEIGHT+(rawX-(KNOTWORK_MAJOR+KNOTWORK_MINOR))*KNOTWORK_SCALE_Y;
- const y=KNOTWORK_RUNWAY_HEIGHT+(naturalY-KNOTWORK_RUNWAY_HEIGHT)*settle;
- const z=(KNOTWORK_BASIS_A*rawY+KNOTWORK_BASIS_B*rawZ)*KNOTWORK_SCALE_Z;
+// SKYWAY GRAND PRIX: a single, smooth, non-self-intersecting elevated circuit.
+// The broad oval combines two sweeping elevated sectors with a gentle central S-flow.
+// Its start/finish tangent is flattened into a long runway for high-speed acceleration.
+function skywayCoursePoint(t){
+ const a=customWrap(t,CUSTOM_TRACK_TAU),signed=a>Math.PI?a-CUSTOM_TRACK_TAU:a,abs=Math.abs(signed);
+ const baseX=680*Math.cos(a)+40*Math.cos(2*a+.30);
+ const z=500*Math.sin(a)+25*Math.sin(2*a-.25);
+ const xAtStart=680+40*Math.cos(.30);
+ const u=clamp((abs-.52)/.50,0,1),blend=u*u*(3-2*u);
+ const x=xAtStart+(baseX-xAtStart)*blend;
+ const ramp=(angle,width,height)=>{const d=Math.abs(customAngleDelta(a,angle));if(d>=width)return 0;const q=d/width;return height*.5*(1+Math.cos(Math.PI*q));};
+ const y=32+5*Math.sin(2*a+.2)+ramp(1.72,1.22,38)+ramp(4.78,1.18,29);
  return{x,y,z,t:a};
 }
 function customTrackCenterAtT(index,t){
@@ -2927,7 +2917,7 @@ function customTrackCenterAtT(index,t){
     +ramp(.82,.24,66)+ramp(2.34,.22,78)+ramp(3.94,.25,70)+ramp(5.48,.23,62);
   return{x,y,z,t};
  }
- if(index===7)return knotworkCoursePoint(t);
+ if(index===7)return skywayCoursePoint(t);
  const y=42+25*Math.sin(t+.7)+12*Math.sin(2*t-.2)+5*Math.sin(3*t+.5);
  return{x:665.3*Math.sin(t)+173.5*Math.sin(3*t+.4),y:Math.max(1,y),z:578.5*Math.sin(2*t+.2)+159.1*Math.sin(4*t+.15),t};
 }
@@ -2970,7 +2960,7 @@ function customTrackStationAtT(index,t){
 function customTrackBank(index,t,station=0){
  if(index===4)return .065*Math.sin(3*t+.25)+.025*Math.sin(5*t-.2);
  if(index===5)return .17*Math.sin(2*t+.25);
- if(index===7)return .10*Math.sin(5*t+.35)+.055*Math.sin(9*t-.72)+.025*Math.sin(13*t+1.1);
+ if(index===7)return .055*Math.sin(2*t+.25)+.025*Math.sin(3*t-.4);
  return .13*Math.sin(3*t+.2)+.06*Math.sin(7*t-.3);
 }
 function customTrackFrame(index,station){
@@ -3600,7 +3590,7 @@ void main(){
    float ridgeGlow=exp(-pow((y-.605)*7.2,2.0));
    sky+=vec3(.008,.085,.13)*ridgeGlow;
  }
- // Knotwork Hairball atmosphere: black-green abyss, electric ion curtains and a hot reactor horizon.
+ // Skyway Grand Prix atmosphere: deep blue-black sky with restrained cyan ion curtains.
  if(uTrackIndex>6.5&&uTrackIndex<7.5){
    float lattice=pow(max(0.0,.5+.5*cos(uv.x*uAspect*39.0+sin(y*24.0+uTime*.16)*2.8)),17.0);
    float bands=smoothstep(.535,.625,y)*(1.0-smoothstep(.85,.95,y));
@@ -4948,8 +4938,7 @@ const nrWeatherStyle=document.createElement('style');nrWeatherStyle.textContent=
 `;
 document.head.appendChild(nrWeatherStyle);
 let nrMapCache={track:-1,points:[],bounds:null};let nrMapCacheBuiltAt=0;let nrHudFrame=0,nrWeatherFrameTime=0;
-/* Track 8 is a compact, fixed Knotwork Hairball circuit. Its moderate 3D geometry is
-   built into the native world mesh; no moving overlay or mutable road section is used. */
+/* Track 8 is the fixed Skyway Grand Prix circuit, built into the native world mesh. */
 function nrWeatherTrack(){return state.selectedTrack===5||state.selectedTrack===6}
 function nrBuildMap(){const ti=state.selectedTrack,now=performance.now();if(nrMapCache.track===ti&&(ti!==7||now-nrMapCacheBuiltAt<650))return;const len=track().length,segments=Math.max(120,Math.min(760,Math.ceil(len/8))),pts=[];let minX=Infinity,maxX=-Infinity,minZ=Infinity,maxZ=-Infinity;for(let i=0;i<=segments;i++){const p=roadPointAt(len*i/segments,0);pts.push({x:p.x,z:p.z});minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minZ=Math.min(minZ,p.z);maxZ=Math.max(maxZ,p.z)}const w=nrMiniMap.width,h=nrMiniMap.height,pad=26,spanX=Math.max(28,maxX-minX),spanZ=Math.max(28,maxZ-minZ),scale=Math.min((w-pad*2)/spanX,(h-pad*2)/spanZ);const cx=(minX+maxX)/2,cz=(minZ+maxZ)/2;const mapped=pts.map(p=>({x:w/2+(p.x-cx)*scale,y:h/2-(p.z-cz)*scale}));nrMapCache={track:ti,points:mapped,bounds:{minX,maxX,minZ,maxZ,cx,cz,scale}};nrMapCacheBuiltAt=now;}
 function nrMapPoint(station,lateral=0){nrBuildMap();const p=roadPointAt(((station%track().length)+track().length)%track().length,lateral),b=nrMapCache.bounds;return{x:nrMiniMap.width/2+(p.x-b.cx)*b.scale,y:nrMiniMap.height/2-(p.z-b.cz)*b.scale}}
