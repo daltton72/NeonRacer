@@ -2211,7 +2211,7 @@ function rcSolarShortcutFurnitureOverlaps(x,z,halfX,halfZ,trackIndex=0){
   }
   return false;
 }
-function rcDrawKnotworkCentralTower(view,proj,eye,windowScale=1){
+function rcDrawKnotworkCentralTower(view,proj,eye,windowScale=1,windowDensity=1){
   // Five connected glass towers form one continuous megastructure in Track 8's inner void.
   // Every tower is twice its previous height; adjoining footprints meet edge-to-edge.
   const cx=485,cz=0,glass=[.018,.075,.105],steel=[.055,.12,.16],mint=[.015,.78,.49],cyan=[.018,.55,.92],violet=[.22,.12,.55];
@@ -2251,7 +2251,7 @@ function rcDrawKnotworkCentralTower(view,proj,eye,windowScale=1){
       for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
         const seed=(i+3)*92821+(row+7)*68917+(col+11)*31337+face*7919;
         const value=Math.abs(Math.sin(seed*12.9898)*43758.5453)%1;
-        if(value>.64)continue;
+        if(value>(.64*windowDensity))continue;
         const y=18+row*24,offset=(col-(cols-1)*.5)*((alongX?q.d:q.w)/cols);
         const warm=value<.18,winColor=warm?[1.0,.66,.30]:[.18,.86,1.0];
         const emission=(warm?[1.15,.48,.12]:[.10,.78,1.25]).map(v=>v*(1+0.32*(windowScale-1)));
@@ -2363,13 +2363,13 @@ function rcDrawKnotworkRoadDepth(eye,view,proj){
     for(const detail of details)rcDrawBatch(detail,[.50,.51,.52],.02,.95,identity,mvp,eye,rcWhiteTexture,[0,0,0]);
   }finally{rcGL.colorMask(true,true,true,true);}
 }
-function rcDrawKnotworkTowerScene(eye,target,fovDeg,cameraUp=[0,1,0],farPlane=6500,windowScale=1){
+function rcDrawKnotworkTowerScene(eye,target,fovDeg,cameraUp=[0,1,0],farPlane=6500,windowScale=1,windowDensity=1){
   // Track-selection previews need a longer depth range to retain distant tower facade details.
   // Gameplay keeps the original 6500-unit range to avoid changing race rendering cost/behavior.
   const view=rcLookAt(eye,target,cameraUp),proj=rcPerspective(fovDeg*Math.PI/180,rcCurrentAspect(),.1,farPlane);
   rcGL.enable(rcGL.DEPTH_TEST);rcGL.depthFunc(rcGL.LEQUAL);rcGL.disable(rcGL.BLEND);
   rcDrawKnotworkRoadDepth(eye,view,proj);
-  rcDrawKnotworkCentralTower(view,proj,eye,windowScale);
+  rcDrawKnotworkCentralTower(view,proj,eye,windowScale,windowDensity);
 }
 function rcDrawCityBuildings(eye,target,fovDeg,trackIndex=0,cameraUp=[0,1,0]){
   const palette=rcTrackCityPalette(trackIndex);
@@ -2787,7 +2787,7 @@ function rcRender(){requestAnimationFrame(rcRender);const rotationNow=performanc
     rcGL.viewport(vx,vy,vw,vh);rcGL.scissor(vx,vy,vw,vh);rcGL.clearColor(0,0,0,0);rcGL.clear(rcGL.COLOR_BUFFER_BIT|rcGL.DEPTH_BUFFER_BIT);
     const cam=window.__neonTrackPreviewCamera(i);window.__previewRouteTrackIndex=i;rcPreviewAspect=vw/Math.max(1,vh);
     rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uSceneMode'),2);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTrackIndex'),i);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uCarMode'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloPass'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloExpand'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uNitro'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTime'),performance.now()*.001);
-    if(i<4)rcDrawCityBuildings(cam.eye,cam.target,cam.fov,i);else if(i===7)rcDrawKnotworkTowerScene(cam.eye,cam.target,cam.fov,[0,1,0],16000,3.0);
+    if(i<4)rcDrawCityBuildings(cam.eye,cam.target,cam.fov,i);else if(i===7)rcDrawKnotworkTowerScene(cam.eye,cam.target,cam.fov,[0,1,0],16000,1.5,0.5);
     // Track selection previews show scenery only. Do not draw a vehicle at the start line;
     // the actual selected car and starting grid remain unchanged in gameplay.
    }
