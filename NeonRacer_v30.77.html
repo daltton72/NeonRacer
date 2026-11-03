@@ -2217,13 +2217,6 @@ function rcDrawKnotworkCentralTower(view,proj,eye){
   const cx=485,cz=0,glass=[.018,.075,.105],dark=[.012,.035,.055],steel=[.055,.12,.16],mint=[.015,.78,.49],cyan=[.018,.55,.92],violet=[.22,.12,.55];
   const box=(x,y,z,w,h,d,col,metal=.22,em=[.002,.012,.02])=>rcDrawCityMaterialBox([x,y,z],[w,h,d],0,view,proj,eye,col,.78,metal,em);
   const glow=(x,y,z,w,h,d,col,em)=>rcDrawCityAccentBox([x,y,z],[w,h,d],0,view,proj,eye,col,em);
-  // Broad multi-level foundation plaza and a luminous perimeter ring.
-  box(cx,5,cz,206,10,166,dark,.38,[.004,.018,.028]);
-  box(cx,10.3,cz,194,.7,154,steel,.48,[.004,.022,.034]);
-  glow(cx,10.8,cz-77,194,.42,.85,mint,[.012,.42,.25]);
-  glow(cx,10.8,cz+77,194,.42,.85,cyan,[.012,.28,.52]);
-  glow(cx-96,10.8,cz,1,.42,154,mint,[.012,.42,.25]);
-  glow(cx+96,10.8,cz,1,.42,154,cyan,[.012,.28,.52]);
   const towers=[
     {x:cx,z:cz,w:64,d:64,h:286,c:cyan,em:[.012,.32,.58]},
     {x:cx-67,z:cz-53,w:43,d:46,h:194,c:mint,em:[.012,.34,.20]},
@@ -2233,19 +2226,19 @@ function rcDrawKnotworkCentralTower(view,proj,eye){
   ];
   for(let i=0;i<towers.length;i++){
     const q=towers[i],top=q.h;
-    box(q.x,10+top*.5,q.z,q.w,top,q.d,glass,.34,[.003,.018,.032]);
-    box(q.x-q.w*.39,10+top*.5,q.z,q.w*.10,top*.985,q.d*.91,steel,.52,[.004,.025,.04]);
-    box(q.x+q.w*.39,10+top*.5,q.z,q.w*.10,top*.985,q.d*.91,steel,.52,[.004,.025,.04]);
+    box(q.x,top*.5,q.z,q.w,top,q.d,glass,.34,[.003,.018,.032]);
+    box(q.x-q.w*.39,top*.5,q.z,q.w*.10,top*.985,q.d*.91,steel,.52,[.004,.025,.04]);
+    box(q.x+q.w*.39,top*.5,q.z,q.w*.10,top*.985,q.d*.91,steel,.52,[.004,.025,.04]);
     for(let side of [-1,1]){
-      glow(q.x+side*(q.w*.505),10+top*.5,q.z,.72,top*.94,.9,q.c,q.em);
+      glow(q.x+side*(q.w*.505),top*.5,q.z,.72,top*.94,.9,q.c,q.em);
     }
     for(let yy=25;yy<top-5;yy+=18){
       glow(q.x,yy,q.z-q.d*.505,q.w*.82,.42,.7,q.c,q.em);
       glow(q.x,yy,q.z+q.d*.505,q.w*.82,.42,.7,q.c,q.em);
     }
-    box(q.x,10+top+.9,q.z,q.w*.72,1.8,q.d*.72,steel,.42,[.006,.035,.055]);
-    glow(q.x,10+top+2.0,q.z,q.w*.58,.55,q.d*.58,q.c,q.em);
-    box(q.x,10+top+8,q.z,.8,12,.8,q.c,.25,q.em);
+    box(q.x,top+.9,q.z,q.w*.72,1.8,q.d*.72,steel,.42,[.006,.035,.055]);
+    glow(q.x,top+2.0,q.z,q.w*.58,.55,q.d*.58,q.c,q.em);
+    box(q.x,top+8,q.z,.8,12,.8,q.c,.25,q.em);
   }
   // Elevated glass sky-lobbies bind the five individual towers into one landmark.
   for(const yy of [82,132]){
@@ -2696,7 +2689,7 @@ function rcRender(){requestAnimationFrame(rcRender);const rotationNow=performanc
   rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uNitro'),s&&s.racing&&s.boosting?Math.max(0,Math.min(1,s.nitroStrength||1)):0);
   rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTime'),performance.now()*0.001);
   // City models use the same camera and perspective as the racing world. The original world remains the fallback.
-  if(s&&!inShowroom&&(s.trackIndex===0||(s.racing&&s.trackIndex<4))){rcDrawCityBuildings([s.camX,s.camY,s.camZ],[s.targetX,s.targetY,s.targetZ],s.fov||58.9,s.trackIndex||0,s.cameraUp||[0,1,0]);rcGL.clear(rcGL.DEPTH_BUFFER_BIT);}else if(s&&!inShowroom&&s.racing&&s.trackIndex===7){rcDrawKnotworkTowerScene([s.camX,s.camY,s.camZ],[s.targetX,s.targetY,s.targetZ],s.fov||58.9,s.cameraUp||[0,1,0]);rcGL.clear(rcGL.DEPTH_BUFFER_BIT);}
+  if(s&&!inShowroom&&(s.trackIndex===0||(s.racing&&s.trackIndex<4))){rcDrawCityBuildings([s.camX,s.camY,s.camZ],[s.targetX,s.targetY,s.targetZ],s.fov||58.9,s.trackIndex||0,s.cameraUp||[0,1,0]);rcGL.clear(rcGL.DEPTH_BUFFER_BIT);}
   if(s&&s.racing){const eye=[s.camX,s.camY,s.camZ],target=[s.targetX,s.targetY,s.targetZ];const opponents=s.opponents||[];for(let i=0;i<opponents.length;i++){const a=opponents[i];if(a)rcDrawInstance(eye,target,a.lane||0,a.distance||0,a.yaw||0,s.fov||59.016,a.carId||0);}
    // Nitro edge-softening: two thin expanded translucent shells create a restrained blur halo
    // around the silhouette; the normal car is drawn last and stays crisp in the center.
@@ -4397,21 +4390,12 @@ function update(dt){ambient+=dt;updateWallParticles(dt);if(toastTime>0){toastTim
  const steeringBaseHeading=roadHeadingAt(race.progress);
  if(nosBoost){
    const currentHeading=Number.isFinite(race.worldHeading)?race.worldHeading:steeringBaseHeading;
-   const currentRelative=wrapAngle(currentHeading-steeringBaseHeading);
-   // Positive heading is the game's leftward direction. A small, stable slip angle still
-   // permits a purposeful lane change and natural power-slide without a 90-degree spin.
-   // Make the nose visibly respond to either direction under boost. The earlier
-   // 8-degree cap was too weak to read as a turn at NOS speed, especially on curves.
-   // With throttle + NOS held together the forward speed is much higher, so use a
-   // stronger track-relative steering target instead of letting forward travel dominate.
-   const nosTargetAngle=keys.throttle ? .50 : .28;
-   // Same right-turn target calculation for both directions; left is its exact negative.
-   const targetRelative=steerInput*nosTargetAngle;
-   const steerBlend=1-Math.exp(-Math.max(0,dt)*(steerInput!==0?(keys.throttle?34:26):8.5));
-   const nosHeadingLimit=keys.throttle ? .52 : .31;
-   const boundedRelative=clamp(lerp(currentRelative,targetRelative,steerBlend),-nosHeadingLimit,nosHeadingLimit);
+   // NOS no longer clamps steering to a small track-relative angle. Steering continuously
+   // rotates the chassis, so the player can complete a full turn while the chase camera
+   // remains aligned behind the nose. Left and right use the same signed yaw integration.
    race.steerCommand=steerInput;
-   race.worldHeading=wrapAngle(steeringBaseHeading+boundedRelative);
+   const nosYawRate=(.30+.92*steerSpeed)*steeringAuthority*(keys.throttle?1.18:1.0);
+   race.worldHeading=wrapAngle(currentHeading+steerInput*nosYawRate*Math.max(0,dt));
  }else{
    race.steerCommand=lerp(Number.isFinite(race.steerCommand)?race.steerCommand:0,steerInput,1-Math.exp(-clamp(14+(gripScore-1)*8,9,20)*Math.max(0,dt)));
    const yawRate=(.24+.72*steerSpeed)*steeringAuthority*(driftInput?1.48:1.0);
@@ -4940,20 +4924,12 @@ function renderFrame(dt=1/60){if(view==='tracks'&&!race.active){renderTrackSelec
  const camYBase=3.9,figure8Active=state.selectedTrack===2;
  // Follow the car's real heading and lateral position. The camera still anticipates motion, but it no longer
  // dictates the car's direction by looking only down the predefined centreline.
- const carTangent=roadHeadingAt(progress),carRelativeYaw=race.active?wrapAngle((Number.isFinite(race.worldHeading)?race.worldHeading:carTangent)-carTangent):0,metricHere=roadMetricAt(progress),loopCameraMode=(state.selectedTrack===3&&solarLoopPoint(progress,0).loop),camBack=loopCameraMode?8.2:9.4,lookAhead=loopCameraMode?12.5:31;
- // Keep the road visually stable when the driver turns the car. The previous camera used
- // the car's relative yaw to shift both camera and look-ahead laterally by several metres,
- // making the fixed road appear to wave side-to-side. The camera now follows actual lane
- // position while its aim stays on the circuit ahead; vehicle yaw remains independent.
- const camParam=progress-camBack/metricHere,targetParam=progress+lookAhead/metricHere;
- const camLane=lane,targetLane=lane;
- const cp=roadPointAt(camParam,camLane),tp=roadPointAt(targetParam,targetLane),camPitch=Number.isFinite(cp.pitch)?cp.pitch:0,targetPitch=Number.isFinite(tp.pitch)?tp.pitch:0,camHeading=Number.isFinite(cp.heading)?cp.heading:0,camUpX=Number.isFinite(cp.upX)?cp.upX:Math.sin(camHeading)*Math.sin(camPitch),camUpY=Number.isFinite(cp.upY)?cp.upY:Math.cos(camPitch),camUpZ=Number.isFinite(cp.upZ)?cp.upZ:Math.cos(camHeading)*Math.sin(camPitch),targetUpX=Number.isFinite(tp.upX)?tp.upX:0,targetUpY=Number.isFinite(tp.upY)?tp.upY:Math.cos(targetPitch),targetUpZ=Number.isFinite(tp.upZ)?tp.upZ:Math.sin(targetPitch),cameraUp=[camUpX,camUpY,camUpZ];
- // Rotate the chase-camera offset with the car's actual heading, not just the road centreline.
- // This keeps the camera behind the nose during steering instead of letting the car yaw
- // sideways across the screen. The matching look-ahead shift keeps the view aimed down the
- // direction the car is pointing; the road itself and its geometry remain unchanged.
- const cameraTurnOffset=Math.sin(carRelativeYaw),camRightX=Math.cos(camHeading),camRightZ=-Math.sin(camHeading);
- let camX=cp.x-cameraTurnOffset*camBack*camRightX+camYBase*camUpX,camY=cp.y+camYBase*camUpY,camZ=cp.z-cameraTurnOffset*camBack*camRightZ,targetX=tp.x+cameraTurnOffset*lookAhead*camRightX+.25*targetUpX,targetY=tp.y+.25*targetUpY,targetZ=tp.z+cameraTurnOffset*lookAhead*camRightZ+.25*targetUpZ;
+ const carTangent=roadHeadingAt(progress),carHeading=race.active&&Number.isFinite(race.worldHeading)?race.worldHeading:carTangent,metricHere=roadMetricAt(progress),loopCameraMode=(state.selectedTrack===3&&solarLoopPoint(progress,0).loop),camBack=loopCameraMode?8.2:9.4,lookAhead=loopCameraMode?12.5:31;
+ // True chase camera: its offset and look direction use the vehicle's full world heading.
+ // Unlike a sine-only lateral offset, this stays directly behind the car through 360-degree turns.
+ const carPoint=roadPointAt(progress,lane),carPitch=Number.isFinite(carPoint.pitch)?carPoint.pitch:0,carUpX=Number.isFinite(carPoint.upX)?carPoint.upX:Math.sin(carTangent)*Math.sin(carPitch),carUpY=Number.isFinite(carPoint.upY)?carPoint.upY:Math.cos(carPitch),carUpZ=Number.isFinite(carPoint.upZ)?carPoint.upZ:Math.cos(carTangent)*Math.sin(carPitch),cameraUp=[carUpX,carUpY,carUpZ];
+ const headingX=Math.sin(carHeading),headingZ=Math.cos(carHeading);
+ let camX=carPoint.x-headingX*camBack+camYBase*carUpX,camY=carPoint.y+camYBase*camUpY,camZ=carPoint.z-headingZ*camBack,targetX=carPoint.x+headingX*lookAhead+.25*carUpX,targetY=carPoint.y+.25*carUpY,targetZ=carPoint.z+headingZ*lookAhead+.25*carUpZ;
  if(nitroVisual>.015){camX+=Math.sin(tt*16.0)*.010*nitroVisual;camY+=Math.cos(tt*13.5)*.005*nitroVisual}if(race.active&&state.options.shake&&race.shake>0){camX+=(Math.random()-.5)*race.shake;camY+=(Math.random()-.5)*race.shake*.55}
   cameraPos=[camX,camY,camZ];lookAt(V,cameraPos,[targetX,targetY,targetZ],cameraUp);perspective(P,renderFov,screenW/screenH,.1,mainFar);mult(VP,P,V);
  gl.bindFramebuffer(gl.FRAMEBUFFER,sceneTarget.f);gl.viewport(0,0,screenW,screenH);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.BLEND);gl.depthMask(true);gl.clearColor(.012,.022,.042,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
