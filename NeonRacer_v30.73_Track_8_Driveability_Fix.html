@@ -2874,7 +2874,7 @@ function nexusTracePoint(t){
 // The start/finish tangent is stretched into a flat runway around station zero.
 // Reduced lateral oscillation widens the tightest corners without changing the route topology.
 const KNOTWORK_P=3, KNOTWORK_Q=5;
-const KNOTWORK_MAJOR=215, KNOTWORK_MINOR=94;
+const KNOTWORK_MAJOR=260, KNOTWORK_MINOR=55;
 const KNOTWORK_SCALE_X=.98, KNOTWORK_SCALE_Y=.58, KNOTWORK_SCALE_Z=1.04;
 const KNOTWORK_FLAT_HALF_ANGLE=.54; // 3x the original flat start/finish runway length
 const KNOTWORK_TANGENT_LENGTH=Math.hypot(KNOTWORK_MINOR*KNOTWORK_Q,KNOTWORK_P*(KNOTWORK_MAJOR+KNOTWORK_MINOR));
@@ -2885,7 +2885,7 @@ function knotworkCoursePoint(t){
  const a=customWrap(t,CUSTOM_TRACK_TAU),rad=KNOTWORK_MAJOR+KNOTWORK_MINOR*Math.cos(KNOTWORK_Q*a);
  const rawX=rad*Math.cos(KNOTWORK_P*a),rawY=KNOTWORK_MINOR*Math.sin(KNOTWORK_Q*a),rawZ=rad*Math.sin(KNOTWORK_P*a);
  const signed=a>Math.PI?a-CUSTOM_TRACK_TAU:a,abs=Math.abs(signed);
- // Blend from a genuine straight start/finish runway into the torus-knot route.
+ // Blend from a genuine straight start/finish runway into the widened, lower-curvature torus-knot route.
  // Previously X and Y were flattened while Z continued along the curved knot formula.
  // That made the runway double back over itself and its tangent collapse to zero, which
  // caused the route frame and progress metric to become unstable during the first section.
@@ -2983,7 +2983,7 @@ function customTrackStationAtT(index,t){
 function customTrackBank(index,t,station=0){
  if(index===4)return .065*Math.sin(3*t+.25)+.025*Math.sin(5*t-.2);
  if(index===5)return .17*Math.sin(2*t+.25);
- if(index===7)return .035*Math.sin(3*t+.35)+.015*Math.sin(5*t-.72);
+ if(index===7)return .012*Math.sin(3*t+.35)+.006*Math.sin(5*t-.72);
  return .13*Math.sin(3*t+.2)+.06*Math.sin(7*t-.3);
 }
 function customTrackFrame(index,station){
