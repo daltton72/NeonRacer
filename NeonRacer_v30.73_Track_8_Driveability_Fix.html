@@ -2791,7 +2791,7 @@ const TRACKS=[
  {name:'Nexus Tri-Flow Circuit',difficulty:'ELITE',length:4200,accent:'#00e7d0',accent2:'#36aaff',glow:'#00d9d0',sky:'#06182b',kind:4,day:false,desc:'REFERENCE-TRACED TREFOIL · THREE GRADE-SEPARATED OVERPASSES · 3.95 KM'},
  {name:'Nexus Modular Circuit',difficulty:'EXPERT',length:3120,accent:'#18baff',accent2:'#ff8734',glow:'#18baff',sky:'#061321',kind:5,day:false,desc:'BRAIDED MODULAR SKYWAYS · SEVEN GRADE-SEPARATED CROSSINGS · 3.44 KM'},
  {name:'Skybridge Velocity',difficulty:'EXTREME',length:6170,accent:'#18baff',accent2:'#ff8734',glow:'#18baff',sky:'#061321',kind:6,day:false,desc:'MODULAR RAMP BRIDGES · ELEVATED RIDGE RUNS · 6.17 KM'},
- {name:'KNOTWORK: THE HAIRBALL',difficulty:'MYTHIC',length:6200,accent:'#00ff9a',accent2:'#00cfff',glow:'#00ffc8',sky:'#01070b',kind:7,day:false,desc:'COMPACT 3D KNOTWORK · FLAT START/FINISH RUNWAY · GRADE-SEPARATED CROSSINGS'},
+ {name:'SKYWAY OVAL',difficulty:'ADVANCED',length:2800,accent:'#00ff9a',accent2:'#00cfff',glow:'#00ffc8',sky:'#01070b',kind:7,day:false,desc:'WIDE FLOWING OVAL · TWO LONG SWEEPING TURNS · GENTLE ELEVATION CHANGES'},
 ];
 // Native route adaptations inspired by the TORCS Multi Cross 7, Over Under 2 and Skyline Ridge layouts.
 // These are rebuilt in Neon Racer's own road system so AI, collisions, camera and car orientation share one route.
@@ -2940,7 +2940,7 @@ function customTrackCenterAtT(index,t){
     +ramp(.82,.24,66)+ramp(2.34,.22,78)+ramp(3.94,.25,70)+ramp(5.48,.23,62);
   return{x,y,z,t};
  }
- if(index===7)return knotworkCoursePoint(t);
+ if(index===7){\n  // Track 8: a clean, elongated skyway oval with two broad, predictable sweepers.\n  // The subtle second harmonic keeps it from looking like a mathematically perfect ring\n  // without introducing hairpins, crossings, or tight linked lobes.\n  const x=520*Math.cos(t)+24*Math.cos(2*t+.25);\n  const z=360*Math.sin(t);\n  const y=34+7*Math.sin(2*t+.35);\n  return{x,y,z,t};\n }
  const y=42+25*Math.sin(t+.7)+12*Math.sin(2*t-.2)+5*Math.sin(3*t+.5);
  return{x:665.3*Math.sin(t)+173.5*Math.sin(3*t+.4),y:Math.max(1,y),z:578.5*Math.sin(2*t+.2)+159.1*Math.sin(4*t+.15),t};
 }
@@ -2983,7 +2983,7 @@ function customTrackStationAtT(index,t){
 function customTrackBank(index,t,station=0){
  if(index===4)return .065*Math.sin(3*t+.25)+.025*Math.sin(5*t-.2);
  if(index===5)return .17*Math.sin(2*t+.25);
- if(index===7)return .012*Math.sin(3*t+.35)+.006*Math.sin(5*t-.72);
+ if(index===7)return .018*Math.sin(2*t+.35);
  return .13*Math.sin(3*t+.2)+.06*Math.sin(7*t-.3);
 }
 function customTrackFrame(index,station){
@@ -4798,7 +4798,7 @@ function trackPreviewCamera(index){
   // Track 6 preview: move the camera 1.5x closer while preserving its original viewing direction.
   if(index===5)return {eye:[0,238,-346.67],target:[0,4,0],fov:56};
   if(index===6)return {eye:[0,440,-820],target:[0,42,0],fov:55};
-  if(index===7)return {eye:[148.7,527.7,-235.3],target:[0,385,0],fov:48}; // 3x closer framing: preserve the same viewing direction while reducing camera distance to one third.
+  if(index===7)return {eye:[0,500,-980],target:[0,34,0],fov:48}; // Frame the complete simplified oval in the live track preview.
   const y=9.8;
   return {eye:[0,5.5,-36],target:[0,y,148],fov:50};
 }
