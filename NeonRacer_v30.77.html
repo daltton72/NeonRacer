@@ -2257,6 +2257,11 @@ function rcDrawKnotworkCentralTower(view,proj,eye){
   glow(cx,256,cz,72,.8,72,cyan,[.025,.62,1.0]);
   box(cx,276,cz,2.4,38,2.4,cyan,.3,[.02,.55,1.0]);
 }
+function rcDrawKnotworkTowerScene(eye,target,fovDeg,cameraUp=[0,1,0]){
+  const view=rcLookAt(eye,target,cameraUp),proj=rcPerspective(fovDeg*Math.PI/180,rcCurrentAspect(),.1,6500);
+  rcGL.enable(rcGL.DEPTH_TEST);rcGL.depthFunc(rcGL.LEQUAL);rcGL.disable(rcGL.BLEND);
+  rcDrawKnotworkCentralTower(view,proj,eye);
+}
 function rcDrawCityBuildings(eye,target,fovDeg,trackIndex=0,cameraUp=[0,1,0]){
   const palette=rcTrackCityPalette(trackIndex);
   const view=rcLookAt(eye,target,cameraUp),proj=rcPerspective(fovDeg*Math.PI/180,rcCurrentAspect(),.1,6500),cube=rcMakeCityCube();
@@ -2673,7 +2678,7 @@ function rcRender(){requestAnimationFrame(rcRender);const rotationNow=performanc
     rcGL.viewport(vx,vy,vw,vh);rcGL.scissor(vx,vy,vw,vh);rcGL.clearColor(0,0,0,0);rcGL.clear(rcGL.COLOR_BUFFER_BIT|rcGL.DEPTH_BUFFER_BIT);
     const cam=window.__neonTrackPreviewCamera(i);window.__previewRouteTrackIndex=i;rcPreviewAspect=vw/Math.max(1,vh);
     rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uSceneMode'),2);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTrackIndex'),i);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uCarMode'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloPass'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloExpand'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uNitro'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTime'),performance.now()*.001);
-    if(i<4)rcDrawCityBuildings(cam.eye,cam.target,cam.fov,i);
+    if(i<4)rcDrawCityBuildings(cam.eye,cam.target,cam.fov,i);else if(i===7)rcDrawKnotworkTowerScene(cam.eye,cam.target,cam.fov);
     // Track selection previews show scenery only. Do not draw a vehicle at the start line;
     // the actual selected car and starting grid remain unchanged in gameplay.
    }
@@ -2689,7 +2694,7 @@ function rcRender(){requestAnimationFrame(rcRender);const rotationNow=performanc
   rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uNitro'),s&&s.racing&&s.boosting?Math.max(0,Math.min(1,s.nitroStrength||1)):0);
   rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTime'),performance.now()*0.001);
   // City models use the same camera and perspective as the racing world. The original world remains the fallback.
-  if(s&&!inShowroom&&(s.trackIndex===0||(s.racing&&s.trackIndex<4))){rcDrawCityBuildings([s.camX,s.camY,s.camZ],[s.targetX,s.targetY,s.targetZ],s.fov||58.9,s.trackIndex||0,s.cameraUp||[0,1,0]);rcGL.clear(rcGL.DEPTH_BUFFER_BIT);}
+  if(s&&!inShowroom&&(s.trackIndex===0||(s.racing&&s.trackIndex<4))){rcDrawCityBuildings([s.camX,s.camY,s.camZ],[s.targetX,s.targetY,s.targetZ],s.fov||58.9,s.trackIndex||0,s.cameraUp||[0,1,0]);rcGL.clear(rcGL.DEPTH_BUFFER_BIT);}else if(s&&!inShowroom&&s.racing&&s.trackIndex===7){rcDrawKnotworkTowerScene([s.camX,s.camY,s.camZ],[s.targetX,s.targetY,s.targetZ],s.fov||58.9,s.cameraUp||[0,1,0]);rcGL.clear(rcGL.DEPTH_BUFFER_BIT);}
   if(s&&s.racing){const eye=[s.camX,s.camY,s.camZ],target=[s.targetX,s.targetY,s.targetZ];const opponents=s.opponents||[];for(let i=0;i<opponents.length;i++){const a=opponents[i];if(a)rcDrawInstance(eye,target,a.lane||0,a.distance||0,a.yaw||0,s.fov||59.016,a.carId||0);}
    // Nitro edge-softening: two thin expanded translucent shells create a restrained blur halo
    // around the silhouette; the normal car is drawn last and stays crisp in the center.
