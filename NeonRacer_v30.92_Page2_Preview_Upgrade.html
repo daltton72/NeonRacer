@@ -5236,10 +5236,10 @@ function trackPreviewCamera(index){
   if(index===7)return {eye:[877.5,579,-685],target:[475,108,0],fov:50};
   // Page 2 previews use wide, elevated three-quarter cameras so the complete modular
   // layouts read clearly instead of showing a tiny close-up of one road segment.
-  if(index===8)return {eye:[-170,720,-1120],target:[-35,58,20],fov:52}; // Astra: reveal the oval and raised curly-straw spiral.
-  if(index===9)return {eye:[80,700,-980],target:[0,48,0],fov:53}; // Overpass Matrix: show the interlocking crossings.
-  if(index===10)return {eye:[-110,880,-1160],target:[0,58,0],fov:53}; // Ramp Array: keep the four elevated crests in frame.
-  if(index===11)return {eye:[150,850,-1180],target:[0,62,0],fov:53}; // Orbital Causeway: frame the sweeping bridge network.
+  if(index===8)return {eye:[-102.5,447,-550],target:[-35,58,20],fov:52}; // Astra: reveal the oval and raised curly-straw spiral.
+  if(index===9)return {eye:[40,374,-490],target:[0,48,0],fov:53}; // Overpass Matrix: show the interlocking crossings.
+  if(index===10)return {eye:[-55,469,-580],target:[0,58,0],fov:53}; // Ramp Array: keep the four elevated crests in frame.
+  if(index===11)return {eye:[75,456,-590],target:[0,62,0],fov:53}; // Orbital Causeway: frame the sweeping bridge network.
   return {eye:[0,5.5,-36],target:[0,9.8,148],fov:50};
 }
 window.__neonTrackPreviewCamera=trackPreviewCamera;
