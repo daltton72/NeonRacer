@@ -3023,15 +3023,22 @@ function rcRender(){requestAnimationFrame(rcRender);const rotationNow=performanc
    const previewNow=performance.now();if(previewNow-rcLastTrackPreviewRender<70)return;rcLastTrackPreviewRender=previewNow;
    const dprX=rcCanvas.width/Math.max(1,innerWidth),dprY=rcCanvas.height/Math.max(1,innerHeight);
    rcGL.clearColor(0,0,0,0);rcGL.disable(rcGL.SCISSOR_TEST);rcGL.viewport(0,0,rcCanvas.width,rcCanvas.height);rcGL.clear(rcGL.COLOR_BUFFER_BIT|rcGL.DEPTH_BUFFER_BIT);rcGL.enable(rcGL.SCISSOR_TEST);
-   for(let i=0;i<8;i++){
-    const art=document.querySelector(`#trackGrid .track-card[data-track-index="${i}"] .track-art`);if(!art)continue;const r=art.getBoundingClientRect();if(r.width<8||r.height<8)continue;
+   // Render the cards actually present on the current page. The old fixed 0..7
+   // loop silently skipped every Page 2 card, so none of the new track-specific
+   // scenery overlays could appear there.
+   const previewCards=[...document.querySelectorAll('#trackGrid .track-card[data-track-index]')];
+   for(const card of previewCards){
+    const i=Number(card.dataset.trackIndex);
+    if(!Number.isInteger(i)||i<0||i>=TRACKS.length)continue;
+    const art=card.querySelector('.track-art');if(!art)continue;
+    const r=art.getBoundingClientRect();if(r.width<8||r.height<8)continue;
     const vx=Math.max(0,Math.floor(r.left*dprX)),vy=Math.max(0,Math.floor((innerHeight-r.bottom)*dprY)),vw=Math.max(1,Math.min(rcCanvas.width-vx,Math.floor(r.width*dprX))),vh=Math.max(1,Math.min(rcCanvas.height-vy,Math.floor(r.height*dprY)));
+    if(vx>=rcCanvas.width||vy>=rcCanvas.height)continue;
     rcGL.viewport(vx,vy,vw,vh);rcGL.scissor(vx,vy,vw,vh);rcGL.clearColor(0,0,0,0);rcGL.clear(rcGL.COLOR_BUFFER_BIT|rcGL.DEPTH_BUFFER_BIT);
     const cam=window.__neonTrackPreviewCamera(i);window.__previewRouteTrackIndex=i;rcPreviewAspect=vw/Math.max(1,vh);
     rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uSceneMode'),2);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTrackIndex'),i);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uCarMode'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloPass'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHaloExpand'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uNitro'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTime'),performance.now()*.001);
     if(i<4||(i>=9&&i<=15))rcDrawCityBuildings(cam.eye,cam.target,cam.fov,i);else if(i===7)rcDrawKnotworkTowerScene(cam.eye,cam.target,cam.fov,[0,1,0],16000,1.10,0.0625);
-    // Track selection previews show scenery only. Do not draw a vehicle at the start line;
-    // the actual selected car and starting grid remain unchanged in gameplay.
+    // Track selection previews show scenery only; leave the car and starting grid to the base game.
    }
    window.__previewRouteTrackIndex=null;rcPreviewAspect=0;rcGL.disable(rcGL.SCISSOR_TEST);rcGL.viewport(0,0,rcCanvas.width,rcCanvas.height);return;
   }
