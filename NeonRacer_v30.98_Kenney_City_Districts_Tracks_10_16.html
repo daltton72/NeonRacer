@@ -2605,7 +2605,10 @@ function rcDrawRouteCityBuildings(eye,view,proj,trackIndex){
     visible.push({placement,point,asset,d2});
   }
   visible.sort((a,b)=>a.d2-b.d2);
-  for(const item of visible.slice(0,52)){
+  // Selection cards render several courses at once; use a lighter skyline there.
+  // During a race, bring the fuller nearby district back in.
+  const maxVisible=Number.isInteger(window.__previewRouteTrackIndex)?26:44;
+  for(const item of visible.slice(0,maxVisible)){
     rcDrawRouteCityAsset(item.asset,item.placement,view,proj,eye,trackIndex,item.point);
   }
 }
