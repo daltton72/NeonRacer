@@ -5820,7 +5820,7 @@ function buildBoost(){
    const w=glowW*plumeSpread,tip=outerLength*(.92+clamp((race.speed||0)/2600,0,.22));
    // Broad translucent-looking outer flame, bright inner core, and a fine hot centre.
    b.quad([x-w*1.8,y-.025,z],[x+w*1.8,y-.025,z],[x+w*.10,y+.018,z-tip],[x-w*.10,y+.018,z-tip],a.map(v=>v*.48),a.map(v=>v*.82),3);
-   b.quad([x-w*.78,y,y-.0+z],[x+w*.78,y,z],[x+w*.075,y+.022,z-tip*.78],[x-w*.075,y+.022,z-tip*.78],a2.map(v=>v*.72),a2.map(v=>Math.min(1,v*1.2)),3);
+   b.quad([x-w*.78,y,z],[x+w*.78,y,z],[x+w*.075,y+.022,z-tip*.78],[x-w*.075,y+.022,z-tip*.78],a2.map(v=>v*.72),a2.map(v=>Math.min(1,v*1.2)),3);
    b.quad([x-coreW*1.25,y+.012,z-.02],[x+coreW*1.25,y+.012,z-.02],[x+coreW*.025,y+.026,z-tip*.60],[x-coreW*.025,y+.026,z-tip*.60],[1,.88,.52],[1,.98,.82],3);
  }
  boostMesh=b.mesh();boostMesh.__signature=signature;
