@@ -864,7 +864,7 @@ const rcCanvas = document.getElementById('realCarLayer');
 /* Dedicated screen-space exhaust layer. It is drawn in front of the world but behind the 3D car. */
 const nrNosTrailCanvas=document.createElement('canvas');
 nrNosTrailCanvas.id='nrNosTrailCanvas';
-nrNosTrailCanvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:1.8;pointer-events:none';
+nrNosTrailCanvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none';
 document.body.appendChild(nrNosTrailCanvas);
 const nrNosTrailCtx=nrNosTrailCanvas.getContext('2d',{alpha:true});
 let nrNosTrailDpr=1,nrNosTrailW=0,nrNosTrailH=0;
