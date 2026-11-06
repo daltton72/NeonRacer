@@ -1,0 +1,9 @@
+{
+  "appId": "com.neonracer.game.capacitor",
+  "appName": "NeonRacer",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "hostname": "appassets.androidplatform.net"
+  }
+}
