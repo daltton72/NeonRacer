@@ -43,3 +43,6 @@ Tilt starts automatically without a browser permission prompt or in-game enable 
 ## App identity and release
 
 Application ID: com.neonracer.game. Debug builds use com.neonracer.game.debug. Release builds are not signed here; use Build > Generate Signed Bundle / APK in Android Studio to create a signed release APK. Sideloading the debug APK does not require Play Store publishing.
+
+
+The APK build is also triggered automatically when this Android project folder is updated in the main branch.
