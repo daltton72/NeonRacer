@@ -2,6 +2,17 @@
 
 This is a native Android WebView wrapper for the existing NeonRacer v31.91 HTML game.
 
+## Build the APK using GitHub (no Android Studio required)
+
+A GitHub Actions workflow builds the debug APK automatically whenever files in this Android project folder change, and can also be started manually.
+
+1. Open https://github.com/daltton72/NeonRacer/actions
+2. Select **Build NeonRacer Android APK**.
+3. To start a manual build, click **Run workflow**, then click the green **Run workflow** button.
+4. Wait for the run to finish successfully.
+5. Open the run and download the **NeonRacer-Android-debug-APK** artifact under **Artifacts**.
+6. Extract the ZIP. The APK inside is `app-debug.apk`.
+
 ## Included
 
 - Full game HTML bundled at app/src/main/assets/index.html.
@@ -10,17 +21,16 @@ This is a native Android WebView wrapper for the existing NeonRacer v31.91 HTML 
 - AndroidX WebView Asset Loader serves the bundled game from an HTTPS-like local origin instead of file://.
 - Internet permission for the game's existing Cloudflare R2 and CDN-hosted models, textures, and audio.
 
-## Build on Windows 10
+## Build locally on Windows 10 (alternative)
 
 1. Install stable Android Studio and Android SDK Platform 35.
 2. Extract this entire NeonRacer-Android folder.
 3. In Android Studio choose Open and select the NeonRacer-Android folder (the one containing settings.gradle.kts).
 4. Wait for Gradle sync. Approve downloads for Gradle, Android Gradle Plugin, Kotlin, and SDK components if prompted.
 5. Choose Build > Build Bundle(s) / APK(s) > Build APK(s).
-6. Click locate in the build notification. The debug APK is app/build/outputs/apk/debug/app-debug.apk.
-7. Copy the APK to the Galaxy S20 FE and install it. Sideloading does not require a Play Store account.
+6. The debug APK is app/build/outputs/apk/debug/app-debug.apk.
 
-The project uses JDK 17, Gradle 8.10.2, Android Gradle Plugin 8.8.2, Kotlin 2.0.21, and compile SDK 35. Android Studio's bundled JDK 17 is recommended.
+The project uses JDK 17, Gradle 8.10.2, Android Gradle Plugin 8.8.2, Kotlin 2.0.21, and compile SDK 35.
 
 ## Game asset/network behavior
 
@@ -32,6 +42,4 @@ Tilt starts automatically without a browser permission prompt or in-game enable 
 
 ## App identity and release
 
-Application ID: com.neonracer.game. Debug builds use com.neonracer.game.debug. Release builds are not signed here; use Build > Generate Signed Bundle / APK in Android Studio to create a signed release APK.
-
-This is the Android Studio source project, not a prebuilt APK. Android Studio compiles it locally; first build requires internet to download dependencies and Android build tools.
+Application ID: com.neonracer.game. Debug builds use com.neonracer.game.debug. Release builds are not signed here; use Build > Generate Signed Bundle / APK in Android Studio to create a signed release APK. Sideloading the debug APK does not require Play Store publishing.
