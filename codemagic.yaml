@@ -1,0 +1,40 @@
+workflows:
+  neonracer-capacitor-android:
+    name: NeonRacer Capacitor Android APK
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      node: v22.11.0
+      java: 21
+    scripts:
+      - name: Install Capacitor dependencies
+        script: |
+          cd "$CM_BUILD_DIR/NeonRacer-Capacitor"
+          npm install
+      - name: Prepare bundled NeonRacer game
+        script: |
+          cd "$CM_BUILD_DIR/NeonRacer-Capacitor"
+          npm run prepare:web
+      - name: Generate Capacitor Android project
+        script: |
+          cd "$CM_BUILD_DIR/NeonRacer-Capacitor"
+          npx cap add android
+      - name: Apply landscape and fullscreen settings
+        script: |
+          cd "$CM_BUILD_DIR/NeonRacer-Capacitor"
+          npm run prepare:android
+      - name: Sync Capacitor Android project
+        script: |
+          cd "$CM_BUILD_DIR/NeonRacer-Capacitor"
+          npx cap sync android
+      - name: Install Android SDK components and set SDK path
+        script: |
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/NeonRacer-Capacitor/android/local.properties"
+      - name: Build debug APK
+        script: |
+          cd "$CM_BUILD_DIR/NeonRacer-Capacitor/android"
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+    artifacts:
+      - NeonRacer-Capacitor/android/app/build/outputs/apk/debug/app-debug.apk
