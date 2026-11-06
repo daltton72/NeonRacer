@@ -1,0 +1,6 @@
+#!/bin/sh
+APP_HOME=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if [ ! -f "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" ]; then
+  base64 -d "$APP_HOME/gradle/wrapper/gradle-wrapper.jar.b64" > "$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
+fi
+exec java -classpath "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" org.gradle.wrapper.GradleWrapperMain "$@"
