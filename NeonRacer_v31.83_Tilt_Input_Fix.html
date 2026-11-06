@@ -7786,6 +7786,8 @@ window.addEventListener('keydown',e=>{
 window.addEventListener('keyup',e=>neonHandleKeyboard(e,false),true);
 window.addEventListener('blur',()=>{
  neonHeldKeyCodes.clear();
+ neonTouchSteer.left=false;neonTouchSteer.right=false;
+ neonTouchHeld.throttle=false;neonTouchHeld.brake=false;neonTouchHeld.boost=false;
  if(race.active&&race.nitroActive){race.nitroActive=false;if(race.nitro<99.99){race.nitroLocked=true;race.nitroCoast=5;}}
  keys={left:false,right:false,brake:false,boost:false,throttle:false,drift:false};
  if(race.active&&!race.paused)pauseRace(true);
