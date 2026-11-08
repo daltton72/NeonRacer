@@ -5473,7 +5473,7 @@ function openPaintShop(){
  requestAnimationFrame(()=>{
   if(!panel.classList.contains('open')||!window.__paintPanelPortal)return;
   const target=window.__paintPanelPortal.targetRect;
-  setImportant('transition','left .68s cubic-bezier(.22,.72,.18,1),width .68s cubic-bezier(.22,.72,.18,1),border-color .28s ease,box-shadow .28s ease');
+  setImportant('transition','left .68s cubic-bezier(.22,.72,.18,1),top .68s cubic-bezier(.22,.72,.18,1),width .68s cubic-bezier(.22,.72,.18,1),height .68s cubic-bezier(.22,.72,.18,1),border-color .28s ease,box-shadow .28s ease');
   setImportant('left',target.left+'px');
   setImportant('width',target.width+'px');
   // Explicitly pin all vertical dimensions again; no height growth during expansion.
@@ -5521,7 +5521,7 @@ function closePaintShop(deferUpgradeGrid=true){
   const closed=window.__paintPanelPortal.closedRect;
   const duration=reduced?20:680;
   panel.style.setProperty('pointer-events','none','important');
-  panel.style.setProperty('transition',`left ${reduced?'.02s':'.68s'} cubic-bezier(.22,.72,.18,1),width ${reduced?'.02s':'.68s'} cubic-bezier(.22,.72,.18,1)`,'important');
+  panel.style.setProperty('transition',`left ${reduced?'.02s':'.68s'} cubic-bezier(.22,.72,.18,1),top ${reduced?'.02s':'.68s'} cubic-bezier(.22,.72,.18,1),width ${reduced?'.02s':'.68s'} cubic-bezier(.22,.72,.18,1),height ${reduced?'.02s':'.68s'} cubic-bezier(.22,.72,.18,1)`,'important');
   panel.style.setProperty('left',closed.left+'px','important');
   panel.style.setProperty('width',closed.width+'px','important');
   // Top and height remain the exact measurements captured before opening.
