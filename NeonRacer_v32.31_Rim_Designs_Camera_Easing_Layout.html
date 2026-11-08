@@ -4249,7 +4249,7 @@ function rcRender(){requestAnimationFrame(rcRender);nrResizeNosTrail();nrNosTrai
       const zoom=Math.max(0,Math.min(0.36,(window.__paintPreviewZoom||0)*0.15));
       for(let zi=0;zi<3;zi++)baseEye[zi]=baseTarget[zi]+(baseEye[zi]-baseTarget[zi])*(1-zoom);
       let closeTarget=null,closeEye=null,closeFov=22.4;
-      if(window.__rimShopActive){
+      if(window.__rimShopActive||Number(window.__rimCameraBlend)>.001){
         const wheelAsset=rcCarAssets[window.__selectedCarId||0],wheel=nrRimShopCameraWheel(wheelAsset),yaw=window.__garageYaw||0,cy=Math.cos(yaw),sy=Math.sin(yaw);
         if(wheel){
           const side=wheel.x>=0?1:-1,outerX=wheel.x+side*(wheel.width||.23)*.5,wx=cy*outerX+sy*wheel.z,wz=-sy*outerX+cy*wheel.z;
