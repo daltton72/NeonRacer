@@ -3889,45 +3889,75 @@ function rcProjectLampPoint(mvp,x,y,z){
   return {x:(cx/cw*.5+.5)*innerWidth,y:(1-(cy/cw*.5+.5))*innerHeight};
 }
 
+window.__nrGetExhaustLayout=function(id,w,h,l){
+ const layouts={
+  0:{x:[-.275,.275],y:.18},      // 1970 Camaro: dual rear outlets
+  1:{x:[.285],y:.18},           // Supra: single offset tailpipe
+  4:{x:[-.285,.285],y:.18},     // Corvette C7: wide dual outlets
+  5:{x:[-.115,.115],y:.19},     // GT3 RS: closely grouped centre outlets
+  6:{x:[-.245,.245],y:.18},     // MP4-12C: twin outlets
+  7:{x:[-.12,.12],y:.245},      // Senna: high central rear outlets
+  8:{x:[-.16,.16],y:.20},       // Aventador: central exhaust cluster
+  9:{x:[-.265,.265],y:.18}      // Huracan: twin rear outlets
+ };
+ const spec=layouts[id]||{x:[-.25,.25],y:.18};
+ const rearSign=id===7?1:-1;
+ return {rearSign,points:spec.x.map(v=>({x:w*v,y:h*spec.y,z:rearSign*l*.478}))};
+};
 function nrDrawNosTrails(mvp,asset,rs){
  if(!nrNosTrailCtx||!rs||!rs.boosting||!rs.racing||!(rs.nitroStrength>.025))return;
  nrResizeNosTrail();
  const ctx=nrNosTrailCtx,[w,h,l]=rcGetVehicleLampMeshes(asset).dimensions;
- const power=Math.max(.18,Math.min(1,rs.nitroStrength||0));
+ const id=Number.isInteger(asset.carId)?asset.carId:0,layout=window.__nrGetExhaustLayout(id,w,h,l);
+ const power=Math.max(.10,Math.min(1,rs.nitroStrength||0));
  const speed=Math.max(0,Math.min(1.25,(rs.speed||0)/1800));
  const time=performance.now()*.001;
- const outletX=[-w*.31,-w*.205,w*.205,w*.31],rear=-l*.475;
  ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';ctx.lineJoin='round';
- for(let i=0;i<outletX.length;i++){
-  const x=outletX[i],phase=time*18+i*1.7;
-  const start=rcProjectLampPoint(mvp,x,h*.205,rear);
-  const mid=rcProjectLampPoint(mvp,x+Math.sin(phase)*w*.035,h*.19,rear-(1.0+speed*.55));
-  const end=rcProjectLampPoint(mvp,x+Math.sin(phase*.73)*w*.075,h*.17,rear-(2.8+speed*3.0));
-  if(!start||!mid||!end)continue;
-  const widthPx=Math.max(3,Math.min(23,Math.hypot(start.x-mid.x,start.y-mid.y)*(.85+speed*.8)+w*1.15));
-  const dx=end.x-start.x,dy=end.y-start.y,mag=Math.hypot(dx,dy)||1,nx=-dy/mag,ny=dx/mag;
-  const taper=widthPx*(1.45+speed*.32),flicker=.82+.18*Math.sin(phase*2.4);
-  const grad=ctx.createLinearGradient(start.x,start.y,end.x,end.y);
-  grad.addColorStop(0,'rgba(255,248,210,'+(power*.98*flicker)+')');
-  grad.addColorStop(.13,'rgba(75,255,238,'+(power*.95)+')');
-  grad.addColorStop(.48,'rgba(0,176,255,'+(power*.66)+')');
-  grad.addColorStop(1,'rgba(35,75,255,0)');
-  ctx.shadowColor='rgba(0,225,255,.95)';ctx.shadowBlur=15+speed*22;
-  ctx.fillStyle=grad;ctx.beginPath();
-  ctx.moveTo(start.x+nx*widthPx*.42,start.y+ny*widthPx*.42);
-  ctx.quadraticCurveTo(mid.x+nx*taper*.42,mid.y+ny*taper*.42,end.x,end.y);
-  ctx.quadraticCurveTo(mid.x-nx*taper*.42,mid.y-ny*taper*.42,start.x-nx*widthPx*.42,start.y-ny*widthPx*.42);
+ for(let i=0;i<layout.points.length;i++){
+  const outlet=layout.points[i],phase=time*17+i*2.41;
+  const flicker=.72+.28*Math.sin(phase*1.37);
+  const flameLength=(.46+speed*.62)*(.84+.16*Math.sin(phase*.69));
+  const flutter=Math.sin(phase)*w*.012;
+  const root=rcProjectLampPoint(mvp,outlet.x,outlet.y,outlet.z);
+  const mid=rcProjectLampPoint(mvp,outlet.x+flutter*.55,outlet.y+Math.sin(phase*1.5)*h*.006,outlet.z+layout.rearSign*flameLength*.48);
+  const tip=rcProjectLampPoint(mvp,outlet.x+flutter,outlet.y+Math.cos(phase*1.1)*h*.008,outlet.z+layout.rearSign*flameLength);
+  const e0=rcProjectLampPoint(mvp,outlet.x-w*.024,outlet.y,outlet.z);
+  const e1=rcProjectLampPoint(mvp,outlet.x+w*.024,outlet.y,outlet.z);
+  if(!root||!mid||!tip||!e0||!e1)continue;
+  const dx=tip.x-root.x,dy=tip.y-root.y,mag=Math.hypot(dx,dy)||1,nx=-dy/mag,ny=dx/mag;
+  const baseWidth=Math.max(2.1,Math.min(10.5,Math.hypot(e1.x-e0.x,e1.y-e0.y)*.54));
+  const midWidth=baseWidth*(.68+speed*.06),tipWidth=baseWidth*.035,alpha=Math.min(1,power*flicker);
+  ctx.shadowColor='rgba(30,112,255,'+(alpha*.9)+')';
+  ctx.shadowBlur=6+speed*8;
+  const outer=ctx.createLinearGradient(root.x,root.y,tip.x,tip.y);
+  outer.addColorStop(0,'rgba(145,213,255,'+(alpha*.92)+')');
+  outer.addColorStop(.16,'rgba(64,157,255,'+(alpha*.94)+')');
+  outer.addColorStop(.52,'rgba(20,91,248,'+(alpha*.78)+')');
+  outer.addColorStop(1,'rgba(10,38,155,0)');
+  ctx.fillStyle=outer;ctx.beginPath();
+  ctx.moveTo(root.x+nx*baseWidth*.39,root.y+ny*baseWidth*.39);
+  ctx.bezierCurveTo(mid.x+nx*midWidth*.8,mid.y+ny*midWidth*.8,tip.x+nx*tipWidth,tip.y+ny*tipWidth,tip.x,tip.y);
+  ctx.bezierCurveTo(mid.x-nx*midWidth*.8,mid.y-ny*midWidth*.8,root.x-nx*baseWidth*.39,root.y-ny*baseWidth*.39,root.x-nx*baseWidth*.39,root.y-ny*baseWidth*.39);
   ctx.closePath();ctx.fill();
-  ctx.shadowBlur=7;ctx.strokeStyle='rgba(225,255,255,'+(power*.9)+')';ctx.lineWidth=Math.max(1.1,widthPx*.17);
-  ctx.beginPath();ctx.moveTo(start.x,start.y);ctx.quadraticCurveTo(mid.x,mid.y,end.x,end.y);ctx.stroke();
-  // Fine, short-lived sparks peel off each plume; the main trail remains a solid readable flame.
-  for(let k=0;k<3;k++){
-   const f=.28+k*.22,px=start.x+dx*f+Math.sin(phase+k*4)*widthPx*.55,py=start.y+dy*f+Math.cos(phase+k*3)*widthPx*.55;
-   ctx.fillStyle='rgba(170,255,255,'+(power*(.36+k*.12))+')';ctx.beginPath();ctx.arc(px,py,1+speed*1.4,0,Math.PI*2);ctx.fill();
+
+  // A tighter ion-blue tongue and pale blue-white hot root give the plume layered flame colour.
+  const innerEnd=rcProjectLampPoint(mvp,outlet.x+flutter*.7,outlet.y,outlet.z+layout.rearSign*flameLength*.72);
+  if(innerEnd){
+   const inner=ctx.createLinearGradient(root.x,root.y,innerEnd.x,innerEnd.y);
+   inner.addColorStop(0,'rgba(230,249,255,'+(alpha*.94)+')');
+   inner.addColorStop(.18,'rgba(116,205,255,'+(alpha*.92)+')');
+   inner.addColorStop(.56,'rgba(40,133,255,'+(alpha*.76)+')');
+   inner.addColorStop(1,'rgba(18,65,218,0)');
+   ctx.shadowBlur=3;ctx.fillStyle=inner;ctx.beginPath();
+   ctx.moveTo(root.x+nx*baseWidth*.19,root.y+ny*baseWidth*.19);
+   ctx.quadraticCurveTo(mid.x+nx*baseWidth*.24,mid.y+ny*baseWidth*.24,innerEnd.x,innerEnd.y);
+   ctx.quadraticCurveTo(mid.x-nx*baseWidth*.24,mid.y-ny*baseWidth*.24,root.x-nx*baseWidth*.19,root.y-ny*baseWidth*.19);
+   ctx.closePath();ctx.fill();
   }
  }
  ctx.restore();
 }
+
 function rcDrawVehicleLamps(asset,mvp,model,camera,options={}){
   const lm=rcGetVehicleLampMeshes(asset),rs=window.__realCarState,headlightsOn=!!(rs&&rs.racing&&(rs.trackIndex===1||rs.trackIndex===2)),[w,h,l]=lm.dimensions;
   // Rear lamps are intentionally not rendered. Front headlamp optics remain unchanged.
@@ -7511,40 +7541,32 @@ function buildWorld(index,force=false){
 window.__rebuildCityWorld=()=>buildWorld(state.selectedTrack,true);
 // Vehicle geometry is imported from the seven car GLBs; no procedural cars are built.
 function buildBoost(){
- const b=new Builder(),a=hex(track().accent),a2=hex(track().accent2),carId=state.selectedCar||0;
- const dims=(window.__realCarModelDimensions||[])[carId];
- // Use the selected GLB's fitted dimensions when available; sensible per-car real-size estimates are the loading fallback.
- const fallbackWidth=[1.95,1.91][carId]||1.9;
- const fallbackHeight=[1.20,1.19][carId]||1.2;
- const fallbackLength=[4.73,4.50][carId]||4.6;
+ const b=new Builder(),carId=state.selectedCar||0,dims=(window.__realCarModelDimensions||[])[carId];
+ const fallbackWidth=[1.95,1.91][carId]||1.9,fallbackHeight=[1.20,1.19][carId]||1.2,fallbackLength=[4.73,4.50][carId]||4.6;
  const width=dims&&Number.isFinite(dims[0])?dims[0]:fallbackWidth;
  const height=dims&&Number.isFinite(dims[1])?dims[1]:fallbackHeight;
  const length=dims&&Number.isFinite(dims[2])?dims[2]:fallbackLength;
- // Four exhaust centerlines: both inner and outer tips on the left/right pairs.
- // The previous build used only the inner pair, so the outer mufflers had no plume.
- // Positions are scaled from each fitted model's body width and converge gently rearward.
- const innerOutletX=width*[.235,.225][carId];
- const outerOutletX=width*[.322,.303][carId]; // Slightly inward so the outer plumes line up with the outer exhaust tips.
- const outletY=clamp(height*.215,.22,.36);
- const outletZ=-length*.465;
- const signature=[carId,width.toFixed(3),height.toFixed(3),length.toFixed(3),track().accent,track().accent2].join(':');
+ const layout=window.__nrGetExhaustLayout?window.__nrGetExhaustLayout(carId,width,height,length):{rearSign:-1,points:[{x:-width*.25,y:height*.18,z:-length*.478},{x:width*.25,y:height*.18,z:-length*.478}]};
+ const signature=[carId,width.toFixed(3),height.toFixed(3),length.toFixed(3)].join(':');
  if(boostMesh&&boostMesh.__signature===signature)return;
- const plumeLen=[2.7,2.55][carId]||2.7;
- const outletPositions=[-outerOutletX,-innerOutletX,innerOutletX,outerOutletX];
- for(let outlet=0;outlet<outletPositions.length;outlet++){
-   const x=outletPositions[outlet], y=outletY, z=outletZ;
-   // One plume per physical exhaust tip. Each plume is layered internally with a soft glow
-   // and a narrow hot core; it does not create extra secondary streaks.
-   const outer=outlet===0||outlet===3;
-   const glowW=Math.max(.032,width*(outer?.020:.022)),coreW=glowW*.34;
-   const outerLength=plumeLen*(outer?.94:1.0);
-   const plumeSpread=1.0+clamp((race.speed||0)/1800,0,.75);
-   const w=glowW*plumeSpread,tip=outerLength*(.92+clamp((race.speed||0)/2600,0,.22));
-   // Broad translucent-looking outer flame, bright inner core, and a fine hot centre.
-   b.quad([x-w*1.8,y-.025,z],[x+w*1.8,y-.025,z],[x+w*.10,y+.018,z-tip],[x-w*.10,y+.018,z-tip],a.map(v=>v*.48),a.map(v=>v*.82),3);
-   b.quad([x-w*.78,y,z],[x+w*.78,y,z],[x+w*.075,y+.022,z-tip*.78],[x-w*.075,y+.022,z-tip*.78],a2.map(v=>v*.72),a2.map(v=>Math.min(1,v*1.2)),3);
-   b.quad([x-coreW*1.25,y+.012,z-.02],[x+coreW*1.25,y+.012,z-.02],[x+coreW*.025,y+.026,z-tip*.60],[x-coreW*.025,y+.026,z-tip*.60],[1,.88,.52],[1,.98,.82],3);
- }
+ const plumeLength=.52,segments=7;
+ layout.points.forEach((outlet,index)=>{
+  const phase=index*1.61;
+  for(let seg=0;seg<segments;seg++){
+   const t0=seg/segments,t1=(seg+1)/segments;
+   const bend0=Math.sin(t0*4.1+phase)*width*.010*t0;
+   const bend1=Math.sin(t1*4.1+phase)*width*.010*t1;
+   const z0=outlet.z+layout.rearSign*plumeLength*t0;
+   const z1=outlet.z+layout.rearSign*plumeLength*t1;
+   const x0=outlet.x+bend0,x1=outlet.x+bend1;
+   const w0=width*.018*Math.pow(1-t0,.82),w1=width*.018*Math.pow(1-t1,.82)+.0008;
+   const y0=outlet.y+Math.sin(t0*4.5+phase)*height*.004;
+   const y1=outlet.y+Math.sin(t1*4.5+phase)*height*.004;
+   b.quad([x0-w0,y0,z0],[x0+w0,y0,z0],[x1+w1*.35,y1,z1],[x1-w1*.35,y1,z1],[.025,.12,.78],[.03,.20,1.0],3);
+   b.quad([x0-w0*.36,y0+.006,z0-.002],[x0+w0*.36,y0+.006,z0-.002],[x1+w1*.12,y1+.006,z1],[x1-w1*.12,y1+.006,z1],[.10,.48,1.0],[.08,.62,1.2],3);
+   if(t0<.30)b.quad([x0-w0*.11,y0+.009,z0-.004],[x0+w0*.11,y0+.009,z0-.004],[x1+w1*.04,y1+.009,z1],[x1-w1*.04,y1+.009,z1],[.68,.88,1.0],[.75,1.0,1.35],3);
+  }
+ });
  boostMesh=b.mesh();boostMesh.__signature=signature;
 }
 
