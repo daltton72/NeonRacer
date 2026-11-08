@@ -3751,6 +3751,90 @@ function rcDrawBatch(mesh, color, metal, rough, model, mvp, camera, tex, emissio
   for(const [buf,loc,size] of [[mesh.pos,rcGL.getAttribLocation(rcProgram,'aPosition'),3],[mesh.norm,rcGL.getAttribLocation(rcProgram,'aNormal'),3],[mesh.uv,rcGL.getAttribLocation(rcProgram,'aUV'),2]]){rcGL.bindBuffer(rcGL.ARRAY_BUFFER,buf);rcGL.enableVertexAttribArray(loc);rcGL.vertexAttribPointer(loc,size,rcGL.FLOAT,false,0,0);}
   rcGL.bindBuffer(rcGL.ELEMENT_ARRAY_BUFFER,mesh.idx);rcGL.activeTexture(rcGL.TEXTURE0);rcGL.bindTexture(rcGL.TEXTURE_2D,tex||rcWhiteTexture);rcGL.uniform1i(rcGL.getUniformLocation(rcProgram,'uTex'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uHasEmissiveTex'),0);rcGL.uniform3fv(rcGL.getUniformLocation(rcProgram,'uEmissiveFactor'),new Float32Array([0,0,0]));rcGL.uniform4fv(rcGL.getUniformLocation(rcProgram,'uBase'),new Float32Array([color[0],color[1],color[2],1]));rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uMetal'),metal);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uRough'),rough);rcGL.uniform3fv(rcGL.getUniformLocation(rcProgram,'uTint'),new Float32Array([1,1,1]));rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uTintStrength'),0);rcGL.uniform1f(rcGL.getUniformLocation(rcProgram,'uGlass'),0);rcGL.uniform3fv(rcGL.getUniformLocation(rcProgram,'uEmission'),new Float32Array(emission));rcGL.drawElements(rcGL.TRIANGLES,mesh.count,rcGL.UNSIGNED_SHORT,0);
 }
+
+const rcRimGeometryCache=new Map();
+function rcRimHexColor(hex){
+ const m=/^#([0-9a-f]{6})$/i.exec(String(hex||''));if(!m)return [.77,.81,.84];
+ return [parseInt(m[1].slice(0,2),16)/255,parseInt(m[1].slice(2,4),16)/255,parseInt(m[1].slice(4,6),16)/255];
+}
+function rcRimUploadMesh(data){
+ if(!data.indices.length)return null;
+ const upload=(target,values)=>{const b=rcGL.createBuffer();rcGL.bindBuffer(target,b);rcGL.bufferData(target,values,rcGL.STATIC_DRAW);return b;};
+ const idx=new Uint16Array(data.indices);
+ return {pos:upload(rcGL.ARRAY_BUFFER,new Float32Array(data.positions)),norm:upload(rcGL.ARRAY_BUFFER,new Float32Array(data.normals)),uv:upload(rcGL.ARRAY_BUFFER,new Float32Array(data.uvs)),idx:upload(rcGL.ELEMENT_ARRAY_BUFFER,idx),count:idx.length};
+}
+function rcBuildCustomRimGeometry(asset,style){
+ const d=asset.dimensions||[],width=d[0]||1.9,height=d[1]||1.2,length=d[2]||4.6;
+ const wheelRadius=Math.min(height*.30,length*.082),rimRadius=wheelRadius*.77*(Number(style.diameter)||1);
+ const cy=height*.285,faceX=width*.407;
+ const dark={positions:[],normals:[],uvs:[],indices:[]},metal={positions:[],normals:[],uvs:[],indices:[]},hub={positions:[],normals:[],uvs:[],indices:[]};
+ const tri=(target,side,a,b,c)=>{
+  if(side<0){const t=b;b=c;c=t;}
+  const base=target.positions.length/3;
+  for(const p of [a,b,c]){target.positions.push(p[0],p[1],p[2]);target.normals.push(side,0,0);target.uvs.push(.5,.5);}
+  target.indices.push(base,base+1,base+2);
+ };
+ const quad=(target,side,a,b,c,d)=>{tri(target,side,a,b,c);tri(target,side,a,c,d);};
+ const disc=(target,side,x,y,z,r,steps=36)=>{
+  const center=[x,y,z];
+  for(let n=0;n<steps;n++){
+   const a=n/steps*Math.PI*2,b=(n+1)/steps*Math.PI*2;
+   tri(target,side,center,[x,y+Math.cos(a)*r,z+Math.sin(a)*r],[x,y+Math.cos(b)*r,z+Math.sin(b)*r]);
+  }
+ };
+ const ring=(target,side,x,y,z,r0,r1,steps=48)=>{
+  for(let n=0;n<steps;n++){
+   const a=n/steps*Math.PI*2,b=(n+1)/steps*Math.PI*2;
+   const p0=[x,y+Math.cos(a)*r0,z+Math.sin(a)*r0],p1=[x,y+Math.cos(a)*r1,z+Math.sin(a)*r1];
+   const p2=[x,y+Math.cos(b)*r1,z+Math.sin(b)*r1],p3=[x,y+Math.cos(b)*r0,z+Math.sin(b)*r0];
+   quad(target,side,p0,p1,p2,p3);
+  }
+ };
+ const count=Math.max(3,Math.min(18,Number(style.spokes)||5));
+ for(const side of [-1,1])for(const zSign of [-1,1]){
+  const x=side*faceX,cz=zSign*length*.302,R=rimRadius,hubX=x+side*.018;
+  // Recessed backing, outer lip and spoke faces sit just above the existing tire face.
+  disc(dark,side,x,cy,cz,R*.79,48);
+  ring(dark,side,x-side*.001,cy,cz,R*.53,R*.64,48);
+  ring(metal,side,x+side*.006,cy,cz,R*.82,R*.965,56);
+  ring(metal,side,x+side*.008,cy,cz,R*.70,R*.735,48);
+  const inner=R*(style.deep?.12:.17),outer=R*.835,half=(Number(style.width)||.14)*.5;
+  for(let k=0;k<count;k++){
+   const base=k*Math.PI*2/count-Math.PI/2,branches=style.split?2:1;
+   for(let branch=0;branch<branches;branch++){
+    const sep=style.split?(branch===0?-.075:.075):0,h0=half/(style.split?1.75:1),h1=h0*.58,sweep=Number(style.sweep)||0;
+    const a0=base+sep-h0,a1=base+sep+h0,b0=base+sweep+sep-h1,b1=base+sweep+sep+h1;
+    const p0=[x+side*.011,cy+Math.cos(a0)*inner,cz+Math.sin(a0)*inner];
+    const p1=[x+side*.011,cy+Math.cos(b0)*outer,cz+Math.sin(b0)*outer];
+    const p2=[x+side*.011,cy+Math.cos(b1)*outer,cz+Math.sin(b1)*outer];
+    const p3=[x+side*.011,cy+Math.cos(a1)*inner,cz+Math.sin(a1)*inner];
+    quad(metal,side,p0,p1,p2,p3);
+   }
+  }
+  disc(hub,side,hubX,cy,cz,R*.185,32);
+  ring(hub,side,hubX+side*.001,cy,cz,R*.185,R*.215,32);
+  for(let bolt=0;bolt<5;bolt++){
+   const a=bolt*Math.PI*2/5-Math.PI/2;
+   disc(hub,side,hubX+side*.001,cy+Math.cos(a)*R*.265,cz+Math.sin(a)*R*.265,R*.022,8);
+  }
+ }
+ return {dark:rcRimUploadMesh(dark),metal:rcRimUploadMesh(metal),hub:rcRimUploadMesh(hub)};
+}
+function rcDrawCustomRims(asset,mvp,model,camera){
+ if(!rcGL||!asset||!asset.dimensions)return;
+ const id=Number.isInteger(asset.carId)?asset.carId:0;
+ const cfg=(window.__neonCarRimsById&&window.__neonCarRimsById[String(id)])||{style:'five-spoke',color:'#c4ccd2'};
+ const defs=window.__neonRimStyleDefinitions||[];
+ const style=defs.find(x=>x.id===cfg.style)||defs[0]||{id:'five-spoke',spokes:5,width:.15};
+ const key=id+':'+style.id;let meshes=rcRimGeometryCache.get(key);
+ if(!meshes){meshes=rcBuildCustomRimGeometry(asset,style);rcRimGeometryCache.set(key,meshes);}
+ if(!meshes)return;
+ const color=rcRimHexColor(cfg.color);
+ rcDrawBatch(meshes.dark,[.018,.027,.038],.38,.48,model,mvp,camera,rcWhiteTexture);
+ rcDrawBatch(meshes.metal,color,.88,.23,model,mvp,camera,rcWhiteTexture);
+ rcDrawBatch(meshes.hub,[Math.min(1,color[0]*1.16+.04),Math.min(1,color[1]*1.16+.04),Math.min(1,color[2]*1.16+.04)],.94,.17,model,mvp,camera,rcWhiteTexture);
+}
+
 // Model-aligned emissive lamp geometry. These polygons use the normalized dimensions of each
 // imported GLB, so the actual car silhouette carries its own brake lenses and headlamp optics.
 function rcBuildLampPart(polygons,normalZ){
@@ -3961,6 +4045,7 @@ function rcDrawInstance(camera, target, x, z, yaw, fovDeg, vehicleId=0, haloExpa
   // Add the model-aligned lenses only in the crisp vehicle pass, never on the NOS halo shells.
   if(haloExpand<=0)rcDrawVehicleLamps(asset,mvp,model,camera,renderOptions||{});
   if(haloExpand<=0&&renderOptions&&renderOptions.player)nrDrawNosTrails(mvp,asset,rs);
+  if(haloExpand<=0&&renderOptions&&renderOptions.player)rcDrawCustomRims(asset,mvp,model,camera);
 }
 function rcRender(){requestAnimationFrame(rcRender);nrResizeNosTrail();nrNosTrailCtx.clearRect(0,0,innerWidth,innerHeight);const rotationNow=performance.now();const rcScreenState=window.__realCarState;const rcTargetFps=rcScreenState&&rcScreenState.racing?60:30;if(rotationNow-(window.__rcLastRenderTime||0)<1000/rcTargetFps)return;window.__rcLastRenderTime=rotationNow;const rotationDt=Math.min(.05,Math.max(0,(rotationNow-__garageRotationFrameTime)/1000));__garageRotationFrameTime=rotationNow;window.__paintPreviewZoom=(window.__paintPreviewZoom||0)+((window.__paintZoomTarget||0)-(window.__paintPreviewZoom||0))*Math.min(1,rotationDt*4.5);if(!window.__garageDragging){const garageScreenForRotation=document.getElementById('garageScreen'),upgradesScreenForRotation=document.getElementById('upgradesScreen'),garageVisible=!!((garageScreenForRotation&&garageScreenForRotation.classList.contains('active'))||(upgradesScreenForRotation&&upgradesScreenForRotation.classList.contains('active')));if(garageVisible){if((window.__paintSpinRemaining||0)>0){
  const paintDuration=Math.max(1/60,Number(window.__paintSpinDuration)||0.7),paintFrameDuration=1/60,paintFrameCount=Math.max(1,Math.round(paintDuration*60));
