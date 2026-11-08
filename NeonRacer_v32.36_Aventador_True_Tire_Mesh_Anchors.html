@@ -2640,7 +2640,7 @@ function rcDetectWheelLayout(rawPrims,dimensions,carId){
    LR:{side:-1,axle:"rear",minX:Infinity,minY:Infinity,minZ:Infinity,maxX:-Infinity,maxY:-Infinity,maxZ:-Infinity,count:0},
    RR:{side:1,axle:"rear",minX:Infinity,minY:Infinity,minZ:Infinity,maxX:-Infinity,maxY:-Infinity,maxZ:-Infinity,count:0}
   };
-  const tyrePrims=rawPrims.filter(rp=>rp&&rp.points&&rp.vertexCount&&/\btires?(?:_\d+)?\b/i.test(String(rp.sourceName||"")));
+  const tyrePrims=rawPrims.filter(rp=>rp&&rp.points&&rp.vertexCount&&/\btires?(?:_\d+)?/i.test(String(rp.sourceName||"")));
   for(const rp of tyrePrims){
    for(let i=0;i<rp.vertexCount;i++){
     const x=rp.points[i*3],y=rp.points[i*3+1],z=rp.points[i*3+2];
