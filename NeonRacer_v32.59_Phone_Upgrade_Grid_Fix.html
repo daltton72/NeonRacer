@@ -10576,4 +10576,38 @@ try{resize();buildWorld(state.selectedTrack);renderHome();renderTrackCards();ren
 }
 </style>
 
+
+<style id="nr-v32-60-upgrade-row-height-correction">
+/* v32.60: match mobile grid tracks to the 156px card height imposed by v32.41.
+   Earlier mobile rules left tracks at 122px, so the cards physically overlapped. */
+@media (max-width:560px){
+  #upgradesScreen #upgradeGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:repeat(3,156px)!important;
+    grid-auto-rows:156px!important;
+    gap:9px!important;
+    align-content:center!important;
+    align-items:stretch!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  #upgradesScreen #upgradeGrid>.upgrade-card{
+    box-sizing:border-box!important;
+    height:156px!important;
+    min-height:156px!important;
+    max-height:156px!important;
+    margin:0!important;
+    align-self:stretch!important;
+  }
+}
+@media (max-width:380px){
+  #upgradesScreen #upgradeGrid{
+    grid-template-rows:repeat(3,156px)!important;
+    grid-auto-rows:156px!important;
+    gap:7px!important;
+  }
+}
+</style>
+
 </body></html>
