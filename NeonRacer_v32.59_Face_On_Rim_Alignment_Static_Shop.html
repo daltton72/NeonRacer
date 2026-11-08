@@ -4967,6 +4967,12 @@ function rcEnsureRimPacks(retryFailed=false,onlyPackId=null){
     }finally{window.__realRimPackProgress.done++;}
    }));
   }catch(error){window.__nrRimShared.errors.push(String(error&&error.message||error));}
+  // Keep only the final 13 entries in the combined shop list. This runs after
+  // all packs finish loading, so the visible shop and renderer share the same
+  // exact retained set; earlier rims are removed rather than merely hidden.
+  if(window.__nrRimShared.designs.length>13){
+   window.__nrRimShared.designs.splice(0,window.__nrRimShared.designs.length-13);
+  }
   window.__nrRimShared.loadComplete=true;
   window.__realRimPackResults=window.__nrRimShared.packs.map(p=>({id:p.id,short:p.short,name:p.name,loaded:window.__nrRimShared.designs.filter(d=>d.packId===p.id).length,source:window.__nrRimShared.designs.find(d=>d.packId===p.id)?.source||null,error:window.__nrRimShared.packStatus[p.id]?.error||''}));
   window.__realRimPackErrors=window.__nrRimShared.errors.slice();
