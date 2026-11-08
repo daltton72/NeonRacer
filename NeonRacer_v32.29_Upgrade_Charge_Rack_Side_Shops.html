@@ -4556,8 +4556,8 @@ function rcRender(){requestAnimationFrame(rcRender);nrResizeNosTrail();nrNosTrai
      const rimGoal=rimOpen?1:0;
      window.__nrRimCameraMix=(window.__nrRimCameraMix||0)+(rimGoal-(window.__nrRimCameraMix||0))*Math.min(1,rotationDt*4.2);
      const baseTarget=[0,0.58,0],baseEye=[4.55,2.10,5.55];
-     const garageCarId=window.__selectedCarId||0;
-     const modelDims=(rcCarAssets[garageCarId]&&rcCarAssets[garageCarId].dimensions)||[1.9,1.2,4.6];
+     const rimFocusVehicleId=window.__selectedCarId||0;
+     const modelDims=(rcCarAssets[rimFocusVehicleId]&&rcCarAssets[rimFocusVehicleId].dimensions)||[1.9,1.2,4.6];
      const wheelPoint=[(modelDims[0]||1.9)*.407,(modelDims[1]||1.2)*.285,(modelDims[2]||4.6)*.302];
      const eyeOffset=[1.15,.48,1.0],rightLength=Math.hypot(eyeOffset[0],eyeOffset[2])||1;
      const focusTarget=[wheelPoint[0]+eyeOffset[2]/rightLength*.32,wheelPoint[1],wheelPoint[2]-eyeOffset[0]/rightLength*.32];
