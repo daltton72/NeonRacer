@@ -11314,7 +11314,7 @@ function splitSvgParts(raw,path){
    if(nested.length>1){parent=groups[0];groups=nested;}
   }
   if(groups.length<2)return[{blob:new Blob([clean],{type:'image/svg+xml'}),index:0}];
-  var shared=children.filter(function(n){return n!==groups[0]&&n!==groups[1]&&(String(n.localName).toLowerCase()==='defs'||String(n.localName).toLowerCase()==='style'||String(n.localName).toLowerCase()==='title'||String(n.localName).toLowerCase()==='desc');});
+  var shared=children.filter(function(n){return groups.indexOf(n)<0&&(String(n.localName).toLowerCase()==='defs'||String(n.localName).toLowerCase()==='style'||String(n.localName).toLowerCase()==='title'||String(n.localName).toLowerCase()==='desc');});
   return groups.map(function(group,index){
    var out=doc.createElementNS('http://www.w3.org/2000/svg','svg');
    Array.prototype.slice.call(root.attributes||[]).forEach(function(a){out.setAttribute(a.name,a.value);});
