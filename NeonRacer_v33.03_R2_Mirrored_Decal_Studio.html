@@ -11302,7 +11302,259 @@ try{resize();buildWorld(state.selectedTrack);renderHome();renderTrackCards();ren
  #rimShopNavTools #rimShopCredits{padding:6px 7px!important;font-size:7px!important;letter-spacing:.06em!important}
  #rimShopNavTools #rimShopCredits b{font-size:10px!important}
 }
-</style></body></html>
+</style><script id="nr-v33-r2-decal-runtime">
+(()=>{
+ 'use strict';
+ const R2='https://pub-8a298fe31fc04c1a9f890cc648a77906.r2.dev/NeonRacerAssets/decals/';
+ const PACKS=[
+  {id:'tribal68',label:'68 TRIBAL VECTORS',file:'68_20tribal-vectors-10110.zip'},
+  {id:'tribal73',label:'73 TRIBAL VECTORS',file:'73_20tribal-vectors-11012.zip'},
+  {id:'handdrawn',label:'HAND-DRAWN TRIBAL',file:'hand-drawn-tribal-tattoo-border-element.zip'},
+  {id:'free21',label:'TRIBAL FREE 21',file:'tribal_free_vector_21.zip'},
+  {id:'designs10162',label:'TRIBAL DESIGNS',file:'tribal-vector-designs-10162.zip'},
+  {id:'artamp',label:'ARTAMP TRIBAL',file:'vectorportal-Free_Tribal_Vectors_by_artamp.zip'}
+ ];
+ const packCache=new Map(),imageCache=new Map(),textureCache=new Map();
+ const supported=/\.(svg|png|webp|jpe?g|gif)$/i;
+ const $=s=>document.querySelector(s);
+ const overlay=$('#nrDecalOverlay'),grid=$('#nrDecalGrid'),tabs=$('#nrDecalPackTabs');
+ let activePack=PACKS[0].id,observer=null;
+ const keyOf=(packId,file)=>packId+'::'+file;
+ function setStatus(message,state='info'){
+  const el=$('#nrDecalStatus');if(!el)return;el.textContent=message;el.dataset.state=state;
+ }
+ function getCurrentConfig(){return state.carDecals&&state.carDecals[String(state.selectedCar)]||null;}
+ function updateDecalReadouts(){
+  const config=getCurrentConfig(),carName=String(car().name||'CURRENT VEHICLE').toUpperCase();
+  $('#nrDecalVehicle').textContent=carName;
+  $('#nrDecalLaunchStatus').textContent=config?'DECAL EQUIPPED · BOTH SIDES · '+Math.round(config.size||115)+'%':'NO DECAL EQUIPPED · BOTH SIDES SUPPORTED';
+  $('#nrDecalSize').value=String(config?config.size||115:115);
+  $('#nrDecalSizeValue').textContent=(config?Math.round(config.size||115):115)+'%';
+  $('#nrDecalRemove').disabled=!config;
+  $('#nrDecalActiveName').textContent=config?config.file.split('/').pop().replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').toUpperCase():'NO DECAL SELECTED';
+  $('#nrDecalActivePack').textContent=config?(PACKS.find(p=>p.id===config.packId)?.label||config.packId)+' · MIRRORED BOTH SIDES':'A chosen graphic is projected onto both exterior sides';
+  const activeImage=config&&imageCache.get(keyOf(config.packId,config.file));
+  const host=$('#nrDecalActiveArt');host.replaceChildren();
+  if(activeImage&&activeImage.canvas){
+   const thumb=makeThumbnail(activeImage.canvas,38,34);thumb.className='nr-decal-active-thumb';host.appendChild(thumb);
+  }else host.textContent='◇';
+ }
+ function renderPackTabs(){
+  tabs.innerHTML=PACKS.map(p=>'<button class="nr-decal-pack-tab" type="button" role="tab" data-pack="'+p.id+'" aria-selected="'+(p.id===activePack?'true':'false')+'">'+p.label+'</button>').join('');
+ }
+ function findEOCD(bytes){
+  const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),floor=Math.max(0,bytes.length-65557);
+  for(let p=bytes.length-22;p>=floor;p--)if(view.getUint32(p,true)===0x06054b50)return p;
+  return -1;
+ }
+ function parseZip(bytes){
+  const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),eocd=findEOCD(bytes);
+  if(eocd<0)throw new Error('ZIP directory signature not found; the R2 object may not be a ZIP file.');
+  const total=view.getUint16(eocd+10,true),directoryOffset=view.getUint32(eocd+16,true);
+  if(total===0xffff||directoryOffset===0xffffffff)throw new Error('This ZIP uses ZIP64 and cannot be indexed by this browser build.');
+  const entries=[];let p=directoryOffset;
+  for(let i=0;i<total;i++){
+   if(p+46>bytes.length||view.getUint32(p,true)!==0x02014b50)throw new Error('The ZIP central directory is incomplete.');
+   const flags=view.getUint16(p+8,true),method=view.getUint16(p+10,true),compressedSize=view.getUint32(p+20,true),size=view.getUint32(p+24,true);
+   const nameLength=view.getUint16(p+28,true),extraLength=view.getUint16(p+30,true),commentLength=view.getUint16(p+32,true),localOffset=view.getUint32(p+42,true);
+   const nameBytes=bytes.subarray(p+46,p+46+nameLength);
+   const name=new TextDecoder('utf-8').decode(nameBytes).replace(/\\/g,'/');
+   if(!(flags&1)&&!name.endsWith('/')&&supported.test(name)&&!name.startsWith('__MACOSX/')&&!/(^|\/)(thumbs\.db|desktop\.ini)$/i.test(name)){
+    entries.push({name,method,compressedSize,size,localOffset,flags});
+   }
+   p+=46+nameLength+extraLength+commentLength;
+  }
+  if(!entries.length)throw new Error('No SVG, PNG, WebP, JPEG or GIF decals were found in this pack.');
+  entries.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'}));
+  return {bytes,entries};
+ }
+ async function unzipEntry(zip,entry){
+  if(entry.flags&1)throw new Error('Encrypted ZIP entries are not supported.');
+  const view=new DataView(zip.bytes.buffer,zip.bytes.byteOffset,zip.bytes.byteLength),p=entry.localOffset;
+  if(p+30>zip.bytes.length||view.getUint32(p,true)!==0x04034b50)throw new Error('A ZIP image entry has an invalid local header.');
+  const nameLength=view.getUint16(p+26,true),extraLength=view.getUint16(p+28,true),start=p+30+nameLength+extraLength,end=start+entry.compressedSize;
+  if(end>zip.bytes.length)throw new Error('A ZIP image entry is truncated.');
+  const compressed=zip.bytes.subarray(start,end);let raw;
+  if(entry.method===0)raw=compressed.slice();
+  else if(entry.method===8){
+   if(typeof DecompressionStream!=='function')throw new Error('This browser lacks ZIP deflate support. Open the game in the latest Chrome or Edge.');
+   const stream=new Blob([compressed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+   raw=new Uint8Array(await new Response(stream).arrayBuffer());
+  }else throw new Error('Unsupported ZIP compression method '+entry.method+'.');
+  if(entry.size&&raw.length!==entry.size)throw new Error('A ZIP image entry failed its size check.');
+  return raw;
+ }
+ function svgBlobBytes(bytes){
+  const source=new TextDecoder('utf-8').decode(bytes),doc=new DOMParser().parseFromString(source,'image/svg+xml');
+  if(doc.querySelector('parsererror'))throw new Error('Invalid SVG artwork.');
+  const root=doc.documentElement;
+  if(!root||String(root.nodeName).toLowerCase()!=='svg')throw new Error('SVG root element is missing.');
+  doc.querySelectorAll('script,foreignObject,iframe,object,embed').forEach(node=>node.remove());
+  doc.querySelectorAll('*').forEach(node=>{
+   [...node.attributes].forEach(attr=>{
+    const name=attr.name.toLowerCase(),value=String(attr.value||'').trim();
+    if(name.startsWith('on'))node.removeAttribute(attr.name);
+    else if((name==='href'||name==='xlink:href')&&value&&!value.startsWith('#')&&!/^data:image\/(?:png|jpe?g|webp);base64,/i.test(value))node.removeAttribute(attr.name);
+    else if(/url\(\s*['"]?(?:https?:|\/\/|javascript:)/i.test(value))node.removeAttribute(attr.name);
+   });
+  });
+  if(!root.getAttribute('xmlns'))root.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  if(!root.getAttribute('width'))root.setAttribute('width','1200');
+  if(!root.getAttribute('height'))root.setAttribute('height','600');
+  if(!root.getAttribute('viewBox'))root.setAttribute('viewBox','0 0 1200 600');
+  return new Blob([new XMLSerializer().serializeToString(doc)],{type:'image/svg+xml;charset=utf-8'});
+ }
+ async function loadPack(packId){
+  if(packCache.has(packId))return packCache.get(packId);
+  const info=PACKS.find(p=>p.id===packId);if(!info)throw new Error('Unknown decal pack.');
+  const promise=(async()=>{
+   setStatus('DOWNLOADING '+info.file.toUpperCase()+' FROM R2…','loading');
+   const response=await fetch(R2+encodeURIComponent(info.file),{mode:'cors',cache:'force-cache'});
+   if(!response.ok)throw new Error('R2 returned HTTP '+response.status+' for '+info.file);
+   const bytes=new Uint8Array(await response.arrayBuffer()),zip=parseZip(bytes);
+   return zip;
+  })();
+  packCache.set(packId,promise);
+  try{const result=await promise;packCache.set(packId,result);return result;}
+  catch(error){packCache.delete(packId);throw error;}
+ }
+ async function decodeImage(packId,file){
+  const key=keyOf(packId,file),existing=imageCache.get(key);
+  if(existing)return existing;
+  const promise=(async()=>{
+   const pack=await loadPack(packId),entry=pack.entries.find(e=>e.name===file);
+   if(!entry)throw new Error('The chosen file is not present in its R2 decal pack.');
+   const bytes=await unzipEntry(pack,entry),ext=file.split('.').pop().toLowerCase();
+   const blob=ext==='svg'?svgBlobBytes(bytes):new Blob([bytes],{type:ext==='png'?'image/png':ext==='webp'?'image/webp':ext==='gif'?'image/gif':ext==='jpg'||ext==='jpeg'?'image/jpeg':'application/octet-stream'});
+   const url=URL.createObjectURL(blob),img=new Image();img.decoding='async';img.src=url;
+   try{if(img.decode)await img.decode();else await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;});}
+   catch(e){URL.revokeObjectURL(url);throw new Error('The artwork image could not be decoded.');}
+   const iw=Math.max(1,img.naturalWidth||img.width||1200),ih=Math.max(1,img.naturalHeight||img.height||600),scale=Math.min(1,1200/Math.max(iw,ih));
+   const canvas=document.createElement('canvas');canvas.width=Math.max(64,Math.round(iw*scale));canvas.height=Math.max(64,Math.round(ih*scale));
+   const ctx=canvas.getContext('2d',{alpha:true});ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
+   URL.revokeObjectURL(url);
+   const image={canvas,aspect:canvas.width/Math.max(1,canvas.height),name:file};
+   imageCache.set(key,image);return image;
+  })();
+  imageCache.set(key,promise);
+  try{return await promise;}catch(error){imageCache.delete(key);throw error;}
+ }
+ function makeThumbnail(source,width,height){
+  const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,width,height);
+  const s=Math.min((width-8)/source.width,(height-8)/source.height),w=source.width*s,h=source.height*s;
+  ctx.drawImage(source,(width-w)/2,(height-h)/2,w,h);return canvas;
+ }
+ function infoText(packId,count){const p=PACKS.find(x=>x.id===packId);return (p?p.label:packId.toUpperCase())+' · '+count+' DECALS · TAP A DESIGN TO APPLY TO BOTH SIDES';}
+ async function renderPack(packId){
+  if(observer){observer.disconnect();observer=null;}
+  activePack=packId;renderPackTabs();grid.replaceChildren();
+  setStatus('OPENING '+(PACKS.find(p=>p.id===packId)?.label||packId)+'…','loading');
+  try{
+   const pack=await loadPack(packId);if(activePack!==packId)return;
+   const fragment=document.createDocumentFragment();
+   pack.entries.forEach(entry=>{
+    const tile=document.createElement('button');tile.type='button';tile.className='nr-decal-tile';tile.dataset.decalPack=packId;tile.dataset.decalFile=entry.name;
+    tile.setAttribute('aria-label','Apply decal '+entry.name.split('/').pop());
+    const placeholder=document.createElement('span');placeholder.className='nr-decal-thumb-placeholder';placeholder.textContent='◇';
+    const label=document.createElement('span');label.textContent=entry.name.split('/').pop().replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').toUpperCase();
+    const code=document.createElement('small');code.className='nr-decal-pack-code';code.textContent=entry.name.split('.').pop().toUpperCase();
+    tile.appendChild(placeholder);tile.appendChild(label);tile.appendChild(code);fragment.appendChild(tile);
+   });
+   grid.appendChild(fragment);
+   const selected=getCurrentConfig();
+   if(selected&&selected.packId===packId){[...grid.querySelectorAll('.nr-decal-tile')].find(t=>t.dataset.decalFile===selected.file)?.classList.add('selected');}
+   const tiles=[...grid.querySelectorAll('.nr-decal-tile')];
+   const loadThumb=async tile=>{
+    if(tile.dataset.thumbLoaded)return;tile.dataset.thumbLoaded='1';
+    try{
+     const image=await decodeImage(packId,tile.dataset.decalFile);
+     if(!tile.isConnected||activePack!==packId)return;
+     const thumb=makeThumbnail(image.canvas,172,72);thumb.className='nr-decal-thumb';thumb.setAttribute('aria-hidden','true');
+     const placeholder=tile.querySelector('.nr-decal-thumb-placeholder');if(placeholder)placeholder.replaceWith(thumb);
+    }catch(error){const placeholder=tile.querySelector('.nr-decal-thumb-placeholder');if(placeholder)placeholder.textContent='!';tile.title=String(error.message||error);}
+   };
+   if(typeof IntersectionObserver==='function'){
+    observer=new IntersectionObserver(items=>items.forEach(item=>{if(item.isIntersecting){observer.unobserve(item.target);loadThumb(item.target);}}),{root:grid,rootMargin:'180px'});
+    tiles.forEach(tile=>observer.observe(tile));
+   }else{for(let i=0;i<Math.min(tiles.length,32);i++)loadThumb(tiles[i]);}
+   setStatus(infoText(packId,pack.entries.length),'ready');
+  }catch(error){
+   if(activePack!==packId)return;
+   grid.innerHTML='<div class="nr-decal-empty">PACK LOAD FAILED · '+String(error.message||error).replace(/[<>]/g,'')+'</div>';
+   setStatus('COULD NOT LOAD '+packId.toUpperCase()+' · '+String(error.message||error),'error');
+  }
+ }
+ function renderPackTabs(){
+  tabs.innerHTML=PACKS.map(p=>'<button class="nr-decal-pack-tab" type="button" role="tab" data-pack="'+p.id+'" aria-selected="'+(p.id===activePack?'true':'false')+'">'+p.label+'</button>').join('');
+ }
+ function updateDecalReadouts(){
+  const config=getCurrentConfig();
+  $('#nrDecalVehicle').textContent=String(car().name||'CURRENT VEHICLE').toUpperCase();
+  $('#nrDecalLaunchStatus').textContent=config?'DECAL EQUIPPED · BOTH SIDES · '+Math.round(config.size||115)+'%':'NO DECAL EQUIPPED · BOTH SIDES SUPPORTED';
+  $('#nrDecalSize').value=String(config?config.size||115:115);$('#nrDecalSizeValue').textContent=(config?Math.round(config.size||115):115)+'%';
+  $('#nrDecalRemove').disabled=!config;
+  $('#nrDecalActiveName').textContent=config?config.file.split('/').pop().replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').toUpperCase():'NO DECAL SELECTED';
+  $('#nrDecalActivePack').textContent=config?(PACKS.find(p=>p.id===config.packId)?.label||config.packId)+' · MIRRORED BOTH SIDES':'A chosen graphic is projected onto both exterior sides';
+  const existing=config&&imageCache.get(keyOf(config.packId,config.file)),host=$('#nrDecalActiveArt');host.replaceChildren();
+  if(existing&&existing.canvas){const thumb=makeThumbnail(existing.canvas,38,34);thumb.className='nr-decal-active-thumb';host.appendChild(thumb);}else host.textContent='◇';
+ }
+ function getCurrentConfig(){return state.carDecals&&state.carDecals[String(state.selectedCar)]||null;}
+ function openStudio(){overlay.hidden=false;overlay.setAttribute('aria-hidden','false');updateDecalReadouts();renderPackTabs();renderPack(activePack);}
+ function closeStudio(){overlay.hidden=true;overlay.setAttribute('aria-hidden','true');if(observer){observer.disconnect();observer=null;}}
+ function saveCurrentDecal(packId,file){
+  const id=String(state.selectedCar),old=getCurrentConfig();
+  state.carDecals[id]={packId,file,size:old?old.size:115,mirrored:true};
+  window.__neonCarDecalsById=state.carDecals;save();updateDecalReadouts();
+ }
+ tabs.addEventListener('click',e=>{const tab=e.target.closest('[data-pack]');if(tab)renderPack(tab.dataset.pack);});
+ grid.addEventListener('click',async e=>{
+  const tile=e.target.closest('[data-decal-file]');if(!tile)return;
+  const packId=tile.dataset.decalPack,file=tile.dataset.decalFile;
+  setStatus('APPLYING '+file.split('/').pop().toUpperCase()+'…','loading');
+  try{
+   await decodeImage(packId,file);if(packId!==activePack)return;
+   grid.querySelectorAll('.nr-decal-tile.selected').forEach(x=>x.classList.remove('selected'));
+   tile.classList.add('selected');saveCurrentDecal(packId,file);
+   setStatus('DECAL APPLIED · LEFT + RIGHT SIDES MATCH','ready');
+  }catch(error){setStatus('DECAL COULD NOT BE APPLIED · '+String(error.message||error),'error');}
+ });
+ $('#nrOpenDecalStudio').addEventListener('click',openStudio);
+ $('#nrDecalClose').addEventListener('click',closeStudio);
+ overlay.addEventListener('click',e=>{if(e.target===overlay)closeStudio();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)closeStudio();});
+ $('#nrDecalSize').addEventListener('input',e=>{
+  const config=getCurrentConfig(),value=Math.max(55,Math.min(145,Number(e.target.value)||115));
+  $('#nrDecalSizeValue').textContent=value+'%';if(config){config.size=value;save();}
+ });
+ $('#nrDecalRemove').addEventListener('click',()=>{
+  const id=String(state.selectedCar);delete state.carDecals[id];window.__neonCarDecalsById=state.carDecals;save();updateDecalReadouts();
+  grid.querySelectorAll('.nr-decal-tile.selected').forEach(x=>x.classList.remove('selected'));
+  setStatus('DECAL REMOVED FROM '+String(car().name||'VEHICLE').toUpperCase(),'ready');
+ });
+ document.addEventListener('click',e=>{if(e.target.closest('#paintShopToggle'))updateDecalReadouts();});
+ window.__nrGetDecalRenderState=function(id,asset){
+  const config=state.carDecals&&state.carDecals[String(id)];if(!config||!config.packId||!config.file)return null;
+  const key=keyOf(config.packId,config.file),cached=imageCache.get(key);
+  if(!cached||!cached.canvas){if(!cached)decodeImage(config.packId,config.file).catch(error=>console.warn('Saved vehicle decal could not be restored:',error));return null;}
+  if(!textureCache.has(key)){
+   try{
+    if(!rcGL||rcGL.isContextLost())return null;
+    const texture=rcGL.createTexture();if(!texture)return null;
+    rcGL.activeTexture(rcGL.TEXTURE2);rcGL.bindTexture(rcGL.TEXTURE_2D,texture);
+    rcGL.pixelStorei(rcGL.UNPACK_FLIP_Y_WEBGL,false);rcGL.pixelStorei(rcGL.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);
+    rcGL.texImage2D(rcGL.TEXTURE_2D,0,rcGL.RGBA,rcGL.RGBA,rcGL.UNSIGNED_BYTE,cached.canvas);
+    rcGL.texParameteri(rcGL.TEXTURE_2D,rcGL.TEXTURE_MIN_FILTER,rcGL.LINEAR);rcGL.texParameteri(rcGL.TEXTURE_2D,rcGL.TEXTURE_MAG_FILTER,rcGL.LINEAR);
+    rcGL.texParameteri(rcGL.TEXTURE_2D,rcGL.TEXTURE_WRAP_S,rcGL.CLAMP_TO_EDGE);rcGL.texParameteri(rcGL.TEXTURE_2D,rcGL.TEXTURE_WRAP_T,rcGL.CLAMP_TO_EDGE);
+    textureCache.set(key,texture);rcGL.activeTexture(rcGL.TEXTURE0);
+   }catch(error){console.warn('Could not upload decal texture:',error);try{rcGL.activeTexture(rcGL.TEXTURE0);}catch{}return null;}
+  }
+  return {texture:textureCache.get(key),scale:Math.max(.55,Math.min(1.45,(Number(config.size)||115)/100)),aspect:cached.aspect||2};
+ };
+ window.__nrDecalStudio={packs:PACKS,loadPack,decodeImage,getSelection:getCurrentConfig,close:closeStudio};
+ updateDecalReadouts();
+})();
+</script></body></html>
 
 <!-- v32.70 stock-rim fix: separate wheel-center triangles from the tyre during GLB batching; hide those factory faces only when a custom rim style is selected. -->
 <style id="nr-v32-87-upgrades-back-position-and-centered-slider">
