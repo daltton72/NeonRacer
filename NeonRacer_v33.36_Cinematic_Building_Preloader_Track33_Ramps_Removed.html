@@ -8410,7 +8410,7 @@ function addAstraModularMegastructure(b,index,accent){
    addKitMesh(b,'column',side*25.5,-.2,z,11.0,side<0?Math.PI:0,accent);
    addKitMesh(b,'column',side*33.0,-.2,z+5.5,8.0,side<0?Math.PI:0,accent);
    addKitMesh(b,'curve',side*29.0,19.0,z,6.5,side<0?Math.PI/2:0,accent);
-   addKitMesh(b,'ramp',side*36.0,20.0,z+11.0,5.5,side>0?Math.PI/2:-Math.PI/2,accent);
+   if(index===8)addKitMesh(b,'ramp',side*36.0,20.0,z+11.0,5.5,side>0?Math.PI/2:-Math.PI/2,accent);
   }
 
   // A pair of long elevated service decks flank the conduit.
