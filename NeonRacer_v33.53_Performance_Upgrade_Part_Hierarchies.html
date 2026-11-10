@@ -2649,6 +2649,46 @@ body>#carPaintPanel.is-portaled.open .paint-note{display:none!important}
 }
 </style>
 
+
+<style id="nr-v3353-performance-parts-sprite-images">
+/* Real component artwork from the 4-row x 6-column R2 atlas. */
+#upgradePartsOverlay .parts-image-branch{grid-column:1/-1;padding:clamp(9px,1.5vw,16px)}
+#upgradePartsOverlay .parts-image-grid{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:clamp(7px,1.15vw,13px)!important;padding:0!important
+}
+#upgradePartsOverlay .parts-image-node{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ gap:7px!important;padding:8px!important;min-width:0;
+ border:1px solid rgba(0,255,180,.22)!important;
+ background:linear-gradient(145deg,rgba(0,28,30,.88),rgba(0,8,14,.94))!important;
+ box-shadow:inset 0 0 18px rgba(0,255,160,.035)
+}
+#upgradePartsOverlay .parts-image-node:before{display:none!important}
+#upgradePartsOverlay .parts-image{
+ width:100%;height:clamp(86px,14vh,150px);min-height:72px;
+ background-image:url('https://pub-8a298fe31fc04c1a9f890cc648a77906.r2.dev/images/Neon%20Racing%20Performance%20Parts%20Grid.png');
+ background-repeat:no-repeat;background-size:600% 400%;
+ filter:hue-rotate(65deg) saturate(1.55) brightness(1.08) contrast(1.06);
+ background-color:rgba(0,12,16,.8);border:1px solid rgba(0,255,190,.2);
+ box-shadow:inset 0 0 18px rgba(0,255,150,.08),0 0 12px rgba(0,255,170,.06)
+}
+#upgradePartsOverlay .parts-image-caption{
+ display:block;color:#e1fff7;text-align:center;font-size:clamp(8px,.9vw,10px);
+ line-height:1.25;font-weight:800;letter-spacing:.055em;text-transform:uppercase;
+ min-height:2.5em
+}
+#upgradePartsOverlay .parts-image-node:hover{border-color:rgba(0,255,195,.6)!important;box-shadow:0 0 15px rgba(0,255,170,.12)}
+@media(max-width:650px){
+ #upgradePartsOverlay .parts-image-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #upgradePartsOverlay .parts-image{height:clamp(80px,13vh,118px)}
+}
+@media(max-height:480px) and (orientation:landscape){
+ #upgradePartsOverlay .parts-image{height:clamp(56px,12vh,82px);min-height:50px}
+ #upgradePartsOverlay .parts-image-node{padding:5px!important;gap:4px!important}
+ #upgradePartsOverlay .parts-image-caption{font-size:7px}
+}
+</style>
 </head>
 <body>
 <canvas id="world" aria-label="NEON RACER 3D racing world"></canvas><canvas id="realCarLayer" aria-hidden="true"></canvas><canvas id="vehicleLightFX" aria-hidden="true"></canvas><div id="fx"></div><div id="modelAssetStatus" role="status" style="display:none;position:fixed;left:50%;top:68px;transform:translateX(-50%);z-index:5;max-width:calc(100vw - 32px);padding:10px 14px;border:1px solid rgba(255,110,110,.7);background:rgba(25,5,8,.94);color:#ffd5d5;font:600 11px/1.45 system-ui,sans-serif;letter-spacing:.04em;text-align:center;pointer-events:none"></div>
@@ -7253,28 +7293,20 @@ function closeRimShop(animate=true){
 
 const UPGRADE_PART_HIERARCHIES={
  engine:[
-  {name:'AIR INTAKE & FUEL DELIVERY',parts:['High-flow air filter','Cold-air intake duct','Throttle body','Fuel injectors','High-pressure fuel pump']},
-  {name:'ENGINE MANAGEMENT',parts:['Engine control unit (ECU)','Performance ECU calibration','Ignition coils','High-output spark plugs']},
-  {name:'FORCED INDUCTION',parts:['Turbocharger / supercharger','Intercooler','Boost-control solenoid','Charge pipes','Blow-off valve']},
-  {name:'INTERNAL ENGINE',parts:['Forged pistons','Forged connecting rods','Performance crankshaft','Cylinder head & valve train']}
+  'High-flow air filter','Cold-air intake','Performance fuel injectors',
+  'Turbocharger assembly','Front-mount intercooler','Forged piston set'
  ],
  tires:[
-  {name:'TYRE ASSEMBLY',parts:['Performance tyre compound','Directional tread pattern','Reinforced sidewalls','Lightweight alloy wheel']},
-  {name:'SUSPENSION GEOMETRY',parts:['Adjustable control arms','Camber & toe alignment','Performance bushings','Sway / anti-roll bars']},
-  {name:'DAMPING & GRIP',parts:['Sport coil springs','Adjustable dampers','Strut braces','Limited-slip differential']},
-  {name:'BRAKING HARDWARE',parts:['Ventilated brake rotors','Multi-piston calipers','High-friction brake pads','Braided brake lines']}
+  'Performance tyre set','Lightweight alloy wheel','Adjustable control arms',
+  'Coilover suspension','Anti-roll bar','Limited-slip differential'
  ],
  nitro:[
-  {name:'NITROUS STORAGE',parts:['High-pressure nitrous bottle','Bottle heater','Bottle pressure gauge','Bottle mounting cradle']},
-  {name:'DELIVERY SYSTEM',parts:['Feed line','Pressure regulator','Nitrous solenoid','Fuel solenoid','Distribution nozzle']},
-  {name:'ENGINE SAFETY',parts:['Wideband oxygen sensor','Fuel-pressure sensor','RPM window switch','Progressive nitrous controller']},
-  {name:'BOOST CONTROL',parts:['Purge valve','Bottle pressure transducer','Arming switch','Programmable activation map']}
+  'High-pressure nitrous bottle','Bottle heater system','Nitrous feed line',
+  'Nitrous solenoid','Purge valve assembly','Progressive nitrous controller'
  ],
  armor:[
-  {name:'CHASSIS STRUCTURE',parts:['Reinforced unibody','Front & rear subframes','Seam-welded joints','Structural crossmembers']},
-  {name:'REINFORCEMENT',parts:['Bolt-in roll cage','Front strut tower brace','Rear chassis brace','Door intrusion bars']},
-  {name:'IMPACT MANAGEMENT',parts:['Front crash structure','Rear impact beam','Energy-absorbing mounts','Reinforced crumple zones']},
-  {name:'MOUNTING & PROTECTION',parts:['Engine mounts','Transmission mounts','Differential mounts','Underbody protection plates']}
+  'Reinforced chassis structure','Front & rear subframes','Bolt-in roll cage',
+  'Strut tower brace','Rear impact beam','Underbody protection plate'
  ]
 };
 function closeUpgradeParts(){
@@ -7326,23 +7358,21 @@ function openUpgradeParts(key){
   if(current>=def.max){toast('UPGRADE MAXED');openUpgradeParts(key);return;}
   if(Number(state.credits)<price){toast('NOT ENOUGH CREDITS');return;}
   state.credits-=price;state.upgrades[key]=current+1;save();
-  renderUpgrades();$('#creditsTop').textContent=state.credits.toLocaleString();
-  openUpgradeParts(key);
- };
- foot.append(levelLabel,buy);panel.append(head,tree,foot);
- panel.inert=false;panel.setAttribute('aria-hidden','false');
- screen.classList.add('parts-mode-active');
- close.focus({preventScroll:true});
-}
-
-function renderUpgrades(){
- const root=$('#upgradeGrid'),paintPanel=$('#carPaintPanel');
- closePaintShop(false);closeRimShop(false);
- if(paintPanel&&paintPanel.parentNode===root)paintPanel.remove();
- root.innerHTML='';
- UPGRADE_DEFS.forEach(u=>{
-  const lvl=state.upgrades[u.key],cost=u.cost*(lvl+1),d=document.createElement('div');
-  d.className='upgrade-card';
+  renderUpgrades();$('#creditsTop').textContent=state.credits.toLocaleString(); const tree=document.createElement('div');tree.className='parts-tree';
+ const branch=document.createElement('section');branch.className='parts-branch parts-image-branch';
+ const label=document.createElement('h3');label.textContent='SYSTEM COMPONENTS · 24-PART SPRITE ATLAS';branch.appendChild(label);
+ const nodes=document.createElement('div');nodes.className='parts-node-list parts-image-grid';
+ const atlasRows={engine:0,tires:1,nitro:2,armor:3},row=atlasRows[key]??0;
+ (UPGRADE_PART_HIERARCHIES[key]||[]).forEach((part,col)=>{
+  const node=document.createElement('div');node.className='parts-node parts-image-node';
+  const visual=document.createElement('div');visual.className='parts-image';
+  visual.setAttribute('role','img');visual.setAttribute('aria-label',part);
+  visual.style.backgroundPosition=(col*20)+'% '+(row*100/3)+'%';
+  const caption=document.createElement('span');caption.className='parts-image-caption';caption.textContent=part;
+  node.append(visual,caption);nodes.appendChild(node);
+ });
+ branch.appendChild(nodes);tree.appendChild(branch);
+rd';
   d.innerHTML='<div class="u-icon">'+u.icon+'</div><h3>'+u.name.toUpperCase()+'</h3><p>'+u.desc+'</p><small>LEVEL '+(lvl+1)+' / '+(u.max+1)+'</small><button class="neon-btn '+(state.credits>=cost&&lvl<u.max?'primary':'')+'" '+(lvl>=u.max?'disabled':'')+'>'+(lvl>=u.max?'MAX LEVEL':'UPGRADE · '+cost.toLocaleString())+'</button>';
   d.querySelector('button').type='button';d.querySelector('button').textContent='VIEW PARTS';d.querySelector('button').disabled=false;d.querySelector('button').onclick=()=>openUpgradeParts(u.key);
   root.appendChild(d);
