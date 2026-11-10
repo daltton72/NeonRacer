@@ -9614,7 +9614,7 @@ function startTrackSelectionRace(){
   '#tracksScreen.nr-track-launch-fade{opacity:0!important;pointer-events:none!important;transition:opacity 420ms ease!important}',
   '#topline.nr-track-launch-fade{opacity:0!important;transition:opacity 420ms ease!important}',
   '#realCarLayer.nr-track-launch-fade{opacity:0!important;transition:opacity 320ms ease!important}',
-  '#nrTrackLaunchTransition{position:fixed;inset:0;z-index:10050;pointer-events:none;overflow:hidden;background:#000;color:#eaffff;font-family:Inter,system-ui,sans-serif;opacity:1;transition:opacity 420ms ease}',
+  '#nrTrackLaunchTransition{position:fixed;inset:0;z-index:10050;pointer-events:none;overflow:hidden;background:#000;color:#eaffff;font-family:Inter,system-ui,sans-serif;opacity:0;transition:opacity 420ms ease}',
   '#nrTrackLaunchTransition.active{opacity:1}#nrTrackLaunchTransition.black-ready .nr-track-launch-effects{opacity:0!important;transition:opacity 1ms linear}#nrTrackLaunchTransition.reveal-camera{opacity:0;transition:opacity 420ms ease}',
   '#nrTrackLaunchTransition .nr-track-launch-effects{position:absolute;inset:0;opacity:0;background:#000;transition:opacity 1ms linear}',
   '#nrTrackLaunchTransition .nr-track-speed-rays{position:absolute;inset:-30%;transform-origin:68% 52%;background:repeating-conic-gradient(from 0deg at 68% 52%,transparent 0deg 8deg,'+accent+'55 8.15deg 8.5deg,transparent 8.8deg 15deg);mask-image:radial-gradient(ellipse at 68% 52%,transparent 0 12%,#000 15% 58%,transparent 72%);animation:nrTrackSpeedRay 1050ms cubic-bezier(.12,.7,.18,1) forwards}',
@@ -9642,6 +9642,7 @@ function startTrackSelectionRace(){
  ].join('\n');
  document.head.appendChild(style);
  document.body.appendChild(overlay);
+ overlay.classList.add('active');
 
  const tracksScreen=document.getElementById('tracksScreen');
  const topline=document.getElementById('topline');
