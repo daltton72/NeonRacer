@@ -1,4 +1,4 @@
-<!-- NEON RACER v33.73: CC0 wireframe oil rig and nuclear power station tracks. -->
+<!-- NEON RACER v33.73: CC0 industrial wireframe tracks 34 and 35. -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -6390,20 +6390,8 @@ function customTrackCenterAtT(index,t){
  }
  if(index===7)return knotworkCoursePoint(t);
  if(index===32)return customTrackCenterAtT(8,t);
- if(index===33){
-  // DEEPWATER: long offshore straights and broad, open-ended turns; no tight hairpins.
-  const c=Math.cos(t),s=Math.sin(t),shape=1.48,n=Math.tanh(shape);
-  const x=690*Math.tanh(shape*c)/n+24*Math.sin(3*t+.16);
-  const z=455*Math.tanh(shape*s)/n+16*Math.cos(2*t-.24);
-  const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};
-  return{x,y:34+8*Math.sin(2*t+.25)+lift(.88,.38,29)+lift(3.98,.40,32),z,t};
- }
- if(index===34){
-  // ATOMIC GRID: wide reactor-island orbit with four smooth elevated approach arcs.
-  const x=600*Math.sin(t)+92*Math.sin(3*t+.12),z=420*Math.cos(t)+54*Math.cos(3*t-.2);
-  const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};
-  return{x,y:40+9*Math.sin(2*t+.18)+lift(.72,.36,31)+lift(2.28,.37,36)+lift(3.92,.36,30)+lift(5.42,.37,34),z,t};
- }
+ if(index===33){const c=Math.cos(t),s=Math.sin(t),k=1.48,n=Math.tanh(k),x=690*Math.tanh(k*c)/n+24*Math.sin(3*t+.16),z=455*Math.tanh(k*s)/n+16*Math.cos(2*t-.24);const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};return{x,y:34+8*Math.sin(2*t+.25)+lift(.88,.38,29)+lift(3.98,.40,32),z,t};}
+ if(index===34){const x=600*Math.sin(t)+92*Math.sin(3*t+.12),z=420*Math.cos(t)+54*Math.cos(3*t-.2);const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};return{x,y:40+9*Math.sin(2*t+.18)+lift(.72,.36,31)+lift(2.28,.37,36)+lift(3.92,.36,30)+lift(5.42,.37,34),z,t};}
  if(index===8){
   // Track 9 keeps its broad modular oval but curls one long section into a smooth
   // one-turn rising spiral, like a giant curly straw. The offset fades to zero at
@@ -13125,440 +13113,152 @@ body>#carPaintPanel.is-portaled.open .paint-actions{gap:3px!important}
 </script>
 
 
-<!-- v33.73: CC0 offshore platform and nuclear power station, rendered as animated neon wireframe.
-     Offshore pack: 3DAssets.dev, CC0 1.0 Universal.
-     Nuclear pack: 3DAssets.dev, CC0 1.0 Universal.
-     The GLBs are fetched only when Track 34 or 35 is raced. -->
+<!-- v33.73 CC0 industrial track renderer. 3DAssets.dev asset packs are CC0-1.0. -->
 <script type="module" id="nr-v3373-industrial-wireframe-tracks">
-(() => {
-  'use strict';
-
-  const OIL_TRACK = 33;       // Track 34, zero based.
-  const NUCLEAR_TRACK = 34;   // Track 35, zero based.
-  const ASSETS = {
-    oilPlatform: 'https://cdn.3dassets.dev/assets/37061/v1/model.glb',
-    oilCrane: 'https://cdn.3dassets.dev/assets/37047/v1/model.glb',
-    rotaryTable: 'https://cdn.3dassets.dev/assets/37017/v1/model.glb',
-    nuclearStation: 'https://cdn.3dassets.dev/assets/36945/v1/model.glb'
-  };
-  const THREE_URL = 'https://esm.sh/three@0.160.0';
-  const GLTF_URL = 'https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-
-  let THREE = null;
-  let renderer = null;
-  let scene = null;
-  let camera = null;
-  let canvas = null;
-  let loader = null;
-  let rendererInit = null;
-  let activeTrack = -1;
-  let activeGroup = null;
-  let activeMixers = [];
-  let loadGeneration = 0;
-  let lastFrame = 0;
-  const meshMaterials = new Map();
-  const lineMaterials = new Map();
-
-  window.__nrIndustrialAssetCredits = {
-    license: 'CC0-1.0',
-    oilRigPack: 'https://3dassets.dev/packs/offshore-oil-rig-and-platform',
-    nuclearPack: 'https://3dassets.dev/packs/nuclear-power-station-and-control-room',
-    animatedCrane: ASSETS.oilCrane,
-    animatedRotaryTable: ASSETS.rotaryTable
-  };
-
-  function createCanvas() {
-    canvas = document.createElement('canvas');
-    canvas.id = 'nrIndustrialWireframeLayer';
-    canvas.setAttribute('aria-hidden', 'true');
-    canvas.style.cssText =
-      'position:fixed;inset:0;width:100%;height:100%;display:none;' +
-      'pointer-events:none;z-index:1.72;background:transparent;';
-    document.body.appendChild(canvas);
+(()=>{
+'use strict';
+const OIL=33,NUCLEAR=34;
+const URLS={
+ platform:'https://cdn.3dassets.dev/assets/37061/v1/model.glb',
+ crane:'https://cdn.3dassets.dev/assets/37047/v1/model.glb',
+ rotary:'https://cdn.3dassets.dev/assets/37017/v1/model.glb',
+ nuclear:'https://cdn.3dassets.dev/assets/36945/v1/model.glb'
+};
+window.__nrIndustrialAssetCredits={
+ license:'CC0-1.0',
+ oilRigPack:'https://3dassets.dev/packs/offshore-oil-rig-and-platform',
+ nuclearPack:'https://3dassets.dev/packs/nuclear-power-station-and-control-room'
+};
+let T,renderer,scene,camera,canvas,loader,active=-1,group=null,mixers=[],generation=0,last=0,initPromise=null;
+const mats=new Map();
+function mat(color,opacity=.9){
+ const key=color+':'+opacity;
+ if(!mats.has(key))mats.set(key,new T.MeshBasicMaterial({color,wireframe:true,transparent:true,opacity,depthTest:true,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending}));
+ return mats.get(key);
+}
+function wire(root,color,opacity=.9){root.traverse(o=>{if(o.isMesh){o.material=mat(color,opacity);o.castShadow=false;o.receiveShadow=false;}});}
+async function init(){
+ if(renderer)return true;
+ if(initPromise)return initPromise;
+ initPromise=(async()=>{
+  try{
+   const [three,mod]=await Promise.all([import('https://esm.sh/three@0.160.0'),import('https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader.js')]);
+   T=three;canvas=document.createElement('canvas');canvas.id='nrIndustrialWireframeLayer';
+   canvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;display:none;pointer-events:none;z-index:1.72';
+   document.body.appendChild(canvas);
+   renderer=new T.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
+   renderer.setClearColor(0,0);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.2));renderer.setSize(innerWidth,innerHeight,false);
+   scene=new T.Scene();camera=new T.PerspectiveCamera(59,innerWidth/Math.max(1,innerHeight),.1,6500);loader=new mod.GLTFLoader();
+   window.__nrIndustrialWireframeReady=true;return true;
+  }catch(e){console.warn('Industrial renderer unavailable; game continues without it.',e);return false;}
+ })();return initPromise;
+}
+function fit(root,width){
+ root.updateMatrixWorld(true);const b=new T.Box3().setFromObject(root),s=b.getSize(new T.Vector3()),c=b.getCenter(new T.Vector3());
+ root.position.set(-c.x,-b.min.y,-c.z);
+ const g=new T.Group();g.add(root);g.scale.setScalar(width/Math.max(s.x,s.z,.01));return g;
+}
+function point(track,station,lateral){
+ const f=window.__neonCustomTrackPoint;if(typeof f!=='function')return null;
+ const p=f(track,station,lateral,0);return p&&[p.x,p.y,p.z].every(Number.isFinite)?p:null;
+}
+function mount(parent,root,track,station,side,scale=1,clone=false){
+ const p=point(track,station,side);if(!p)return;
+ const obj=clone?root.clone(true):root;obj.position.set(p.x,p.y-.2,p.z);obj.rotation.y=p.heading||0;obj.scale.multiplyScalar(scale);parent.add(obj);return obj;
+}
+function line(parent,pts,color){
+ const g=new T.BufferGeometry().setFromPoints(pts.map(p=>new T.Vector3(...p)));
+ parent.add(new T.Line(g,new T.LineBasicMaterial({color,transparent:true,opacity:.85,depthWrite:false,blending:T.AdditiveBlending})));
+}
+function fallbackOil(){
+ const g=new T.Group(),cyan=mat('#00f4d2'),blue=mat('#20aaff');
+ for(const x of [-24,24])for(const z of [-18,18]){
+  const leg=new T.Mesh(new T.CylinderGeometry(.8,1.1,36,10,1,true),cyan);leg.position.set(x,-3,z);g.add(leg);
+  line(g,[[x,-21,z],[x,16,z]],'#00f4d2');
+ }
+ for(const y of [-12,0,12])for(const side of [-1,1]){
+  line(g,[[-24,y-12,side*18],[24,y+12,side*18]],'#00f4d2');
+  line(g,[[24,y-12,side*18],[-24,y+12,side*18]],'#00f4d2');
+ }
+ const deck=new T.Mesh(new T.BoxGeometry(58,2,44),blue);deck.position.y=16;g.add(deck);
+ line(g,[[-8,17,0],[-2,61,0],[2,61,0],[8,17,0]],'#20aaff');
+ line(g,[[-8,17,-7],[-2,61,-7],[2,61,-7],[8,17,-7]],'#20aaff');
+ for(let y=23;y<58;y+=6)line(g,[[-8+(y-17)*.14,y,-7],[8-(y-17)*.14,y,-7]],'#20aaff');
+ line(g,[[15,17,-12],[15,29,-12],[39,29,-12],[39,3,-12]],'#00f4d2');
+ return fit(g,72);
+}
+function fallbackNuclear(){
+ const g=new T.Group();
+ for(const [x,z,h,r] of [[-29,-12,48,20],[27,-9,52,21],[0,28,38,16]]){
+  const tower=new T.Mesh(new T.CylinderGeometry(r*.78,r,h,24,9,true),mat('#a6ff45'));tower.position.set(x,h/2,z);g.add(tower);
+  const rim=new T.Mesh(new T.TorusGeometry(r*.78,.16,5,32),mat('#00e7a0'));rim.rotation.x=Math.PI/2;rim.position.set(x,h,z);g.add(rim);
+ }
+ for(const x of [-18,18]){
+  const dome=new T.Mesh(new T.SphereGeometry(15,20,14,0,Math.PI*2,0,Math.PI/2),mat('#00e7a0'));dome.position.set(x,1,4);g.add(dome);
+  const hall=new T.Mesh(new T.BoxGeometry(28,13,34),mat('#a6ff45'));hall.position.set(x,6.5,27);g.add(hall);
+ }
+ return fit(g,96);
+}
+function beacon(parent,track,stations,color){
+ for(const st of stations){const p=point(track,st,0);if(!p)continue;
+  for(const side of [-1,1]){const q=point(track,st,side*24);if(q)line(parent,[[q.x,q.y,q.z],[q.x,q.y+54,q.z],[p.x,p.y+54,p.z]],color);}
+ }
+}
+function animateClip(mixer,clips,pattern,loop,speed){
+ const clip=clips.find(c=>pattern.test(c.name));if(!clip)return;
+ const action=mixer.clipAction(clip);action.setLoop(loop,Infinity);action.setEffectiveTimeScale(speed);action.play();
+}
+function oilAssembly(platform,crane,craneClips,rotary,rotaryClips,width){
+ const root=new T.Group();root.add(platform.clone(true));
+ const cr=crane.clone(true);cr.position.set(20,.05,-12);cr.scale.setScalar(.72);root.add(cr);
+ const cm=new T.AnimationMixer(cr);
+ animateClip(cm,craneClips,/slew/i,T.LoopPingPong,.32);
+ animateClip(cm,craneClips,/boom-open/i,T.LoopPingPong,.42);
+ animateClip(cm,craneClips,/hoist-open/i,T.LoopPingPong,.56);
+ const rt=rotary.clone(true);rt.position.set(-9,.12,7);rt.scale.setScalar(.78);root.add(rt);
+ const rm=new T.AnimationMixer(rt);animateClip(rm,rotaryClips,/spin/i,T.LoopRepeat,.8);
+ wire(root,'#00f4d2',.88);return{root:fit(root,width),mixers:[cm,rm]};
+}
+async function loadOil(){
+ const [p,c,r]=await Promise.all([loader.loadAsync(URLS.platform),loader.loadAsync(URLS.crane),loader.loadAsync(URLS.rotary)]);
+ return [oilAssembly(p.scene,c.scene,c.animations,r.scene,r.animations,82),oilAssembly(p.scene,c.scene,c.animations,r.scene,r.animations,68)];
+}
+async function loadNuclear(){
+ const gltf=await loader.loadAsync(URLS.nuclear);wire(gltf.scene,'#a6ff45',.9);return fit(gltf.scene,104);
+}
+function reset(track){
+ const gen=++generation;active=track;group=new T.Group();mixers=[];scene.clear();scene.add(group);
+ if(track===OIL){
+  mount(group,fallbackOil(),track,430,116);mount(group,fallbackOil(),track,2220,-132,.86);beacon(group,track,[430,2220],'#00f4d2');
+ }else{
+  const f=fallbackNuclear();mount(group,f,track,620,122);mount(group,f,track,1920,-128,.84,true);beacon(group,track,[620,1920],'#a6ff45');
+ }
+ (track===OIL?loadOil():loadNuclear()).then(result=>{
+  if(gen!==generation||active!==track||!group)return;group.clear();mixers=[];
+  if(track===OIL){
+   for(const [i,rig] of result.entries()){mount(group,rig.root,track,i?2220:430,i?-132:116,i?.86:1);mixers.push(...rig.mixers);}
+   beacon(group,track,[430,2220],'#00f4d2');
+   window.__nrIndustrialAssetsStatus='CC0 oil rigs loaded; crane slew/boom/hoist and rotary-table spin animations running.';
+  }else{
+   mount(group,result,track,620,122);mount(group,result,track,1920,-128,.84,true);beacon(group,track,[620,1920],'#a6ff45');
+   window.__nrIndustrialAssetsStatus='CC0 nuclear power station wireframe loaded.';
   }
-
-  async function ensureRenderer() {
-    if (renderer) return true;
-    try {
-      const modules = await Promise.all([import(THREE_URL), import(GLTF_URL)]);
-      THREE = modules[0];
-      const GLTFLoader = modules[1].GLTFLoader;
-      if (!THREE || !GLTFLoader) throw new Error('Three.js or GLTFLoader did not load.');
-
-      createCanvas();
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        antialias: true,
-        depth: true,
-        powerPreference: 'low-power',
-        preserveDrawingBuffer: false
-      });
-      renderer.setClearColor(0x000000, 0);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.2));
-      renderer.setSize(window.innerWidth, window.innerHeight, false);
-      renderer.autoClear = true;
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(
-        59,
-        window.innerWidth / Math.max(1, window.innerHeight),
-        0.1,
-        6500
-      );
-      loader = new GLTFLoader();
-      window.__nrIndustrialWireframeReady = true;
-      return true;
-    } catch (error) {
-      window.__nrIndustrialWireframeReady = false;
-      console.warn('Industrial wireframe renderer unavailable; the base game remains active.', error);
-      if (canvas) canvas.style.display = 'none';
-      return false;
-    }
-  }
-
-  function meshMaterial(color, opacity = 0.9) {
-    const key = color + ':' + opacity;
-    if (!meshMaterials.has(key)) {
-      meshMaterials.set(key, new THREE.MeshBasicMaterial({
-        color,
-        wireframe: true,
-        transparent: true,
-        opacity,
-        depthTest: true,
-        depthWrite: false,
-        side: THREE.DoubleSide,
-        blending: THREE.AdditiveBlending
-      }));
-    }
-    return meshMaterials.get(key);
-  }
-
-  function lineMaterial(color, opacity = 0.9) {
-    const key = color + ':' + opacity;
-    if (!lineMaterials.has(key)) {
-      lineMaterials.set(key, new THREE.LineBasicMaterial({
-        color,
-        transparent: true,
-        opacity,
-        depthTest: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      }));
-    }
-    return lineMaterials.get(key);
-  }
-
-  function applyWireframe(root, color, opacity = 0.9) {
-    const material = meshMaterial(color, opacity);
-    root.traverse(node => {
-      if (!node.isMesh) return;
-      node.material = material;
-      node.castShadow = false;
-      node.receiveShadow = false;
-      node.frustumCulled = true;
-    });
-  }
-
-  function fitModelToWorld(root, targetWidth) {
-    root.updateMatrixWorld(true);
-    const bounds = new THREE.Box3().setFromObject(root);
-    const size = bounds.getSize(new THREE.Vector3());
-    const center = bounds.getCenter(new THREE.Vector3());
-    const horizontalSpan = Math.max(size.x, size.z, 0.01);
-    root.position.x -= center.x;
-    root.position.y -= bounds.min.y;
-    root.position.z -= center.z;
-    const fitted = new THREE.Group();
-    fitted.add(root);
-    fitted.scale.setScalar(targetWidth / horizontalSpan);
-    return fitted;
-  }
-
-  function addLine(group, points, material) {
-    const geometry = new THREE.BufferGeometry().setFromPoints(
-      points.map(p => new THREE.Vector3(p[0], p[1], p[2]))
-    );
-    const line = new THREE.Line(geometry, material);
-    group.add(line);
-    return line;
-  }
-
-  function fallbackOilRig() {
-    const group = new THREE.Group();
-    const cyan = lineMaterial('#00f4d2', 0.88);
-    const blue = lineMaterial('#20aaff', 0.84);
-    const jacket = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.78, 1.15, 36, 10, 1, true),
-      meshMaterial('#00f4d2', 0.78)
-    );
-    for (const x of [-24, 24]) for (const z of [-18, 18]) {
-      const leg = jacket.clone();
-      leg.position.set(x, -3, z);
-      group.add(leg);
-      addLine(group, [[x, -21, z], [x, 16, z]], cyan);
-    }
-    for (const y of [-12, 0, 12]) for (const side of [-1, 1]) {
-      addLine(group, [[-24, y - 12, side * 18], [24, y + 12, side * 18]], cyan);
-      addLine(group, [[24, y - 12, side * 18], [-24, y + 12, side * 18]], cyan);
-    }
-    const deck = new THREE.Mesh(
-      new THREE.BoxGeometry(58, 2, 44),
-      meshMaterial('#20aaff', 0.75)
-    );
-    deck.position.set(0, 16, 0);
-    group.add(deck);
-    addLine(group, [[-8, 17, 0], [-2, 61, 0], [2, 61, 0], [8, 17, 0]], blue);
-    addLine(group, [[-8, 17, -7], [-2, 61, -7], [2, 61, -7], [8, 17, -7]], blue);
-    for (let y = 23; y <= 55; y += 6) {
-      const taper = (y - 17) * 0.14;
-      addLine(group, [[-8 + taper, y, -7], [8 - taper, y, -7]], blue);
-      addLine(group, [[-8 + taper, y, 0], [8 - taper, y, 0]], blue);
-    }
-    addLine(group, [[15, 17, -12], [15, 29, -12], [39, 29, -12]], blue);
-    addLine(group, [[39, 29, -12], [39, 3, -12]], cyan);
-    return fitModelToWorld(group, 72);
-  }
-
-  function fallbackNuclearPlant() {
-    const group = new THREE.Group();
-    const green = meshMaterial('#a6ff45', 0.88);
-    const mint = meshMaterial('#00e7a0', 0.84);
-    const addTower = (x, z, height, radius) => {
-      const tower = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius * 0.78, radius, height, 24, 9, true),
-        green
-      );
-      tower.position.set(x, height * 0.5, z);
-      group.add(tower);
-      const top = new THREE.Mesh(
-        new THREE.TorusGeometry(radius * 0.78, 0.16, 5, 32),
-        mint
-      );
-      top.rotation.x = Math.PI / 2;
-      top.position.set(x, height, z);
-      group.add(top);
-    };
-    addTower(-29, -12, 48, 20);
-    addTower(27, -9, 52, 21);
-    addTower(0, 28, 38, 16);
-    for (const x of [-18, 18]) {
-      const dome = new THREE.Mesh(
-        new THREE.SphereGeometry(15, 20, 14, 0, Math.PI * 2, 0, Math.PI * 0.5),
-        mint
-      );
-      dome.position.set(x, 1, 4);
-      group.add(dome);
-      const hall = new THREE.Mesh(new THREE.BoxGeometry(28, 13, 34), green);
-      hall.position.set(x, 6.5, 27);
-      group.add(hall);
-    }
-    const chimney = new THREE.Mesh(
-      new THREE.CylinderGeometry(2, 3, 46, 12, 1, true),
-      mint
-    );
-    chimney.position.set(0, 23, -32);
-    group.add(chimney);
-    return fitModelToWorld(group, 96);
-  }
-
-  function routePoint(trackIndex, station, lateral) {
-    const fn = window.__neonCustomTrackPoint;
-    if (typeof fn !== 'function') return null;
-    const p = fn(trackIndex, station, lateral, 0);
-    if (!p || ![p.x, p.y, p.z].every(Number.isFinite)) return null;
-    return p;
-  }
-
-  function mountAtTrack(parent, fittedRoot, trackIndex, station, lateral, scale = 1, clone = false) {
-    const p = routePoint(trackIndex, station, lateral);
-    if (!p) return null;
-    const instance = clone ? fittedRoot.clone(true) : fittedRoot;
-    instance.position.set(p.x, p.y - 0.15, p.z);
-    instance.rotation.y = Number.isFinite(p.heading) ? p.heading : 0;
-    instance.scale.multiplyScalar(scale);
-    parent.add(instance);
-    return instance;
-  }
-
-  function addTrackBeacons(parent, trackIndex, stations, color) {
-    const mat = lineMaterial(color, 0.84);
-    for (const station of stations) {
-      const p = routePoint(trackIndex, station, 0);
-      if (!p) continue;
-      for (const side of [-1, 1]) {
-        const q = routePoint(trackIndex, station, side * 24);
-        if (!q) continue;
-        addLine(parent, [
-          [q.x, q.y, q.z],
-          [q.x, q.y + 54, q.z],
-          [p.x, p.y + 54, p.z]
-        ], mat);
-      }
-    }
-  }
-
-  function playClip(mixer, clips, pattern, loopMode, speed) {
-    const clip = clips.find(item => pattern.test(item.name));
-    if (!clip) return false;
-    const action = mixer.clipAction(clip);
-    action.setLoop(loopMode, Infinity);
-    action.setEffectiveTimeScale(speed);
-    action.play();
-    return true;
-  }
-
-  function buildOilAssembly(platformScene, craneScene, craneClips, rotaryScene, rotaryClips, targetWidth) {
-    const assembly = new THREE.Group();
-    assembly.add(platformScene.clone(true));
-
-    const craneRoot = craneScene.clone(true);
-    craneRoot.position.set(20, 0.05, -12);
-    craneRoot.scale.setScalar(0.72);
-    assembly.add(craneRoot);
-    const craneMixer = new THREE.AnimationMixer(craneRoot);
-    playClip(craneMixer, craneClips, /slew/i, THREE.LoopPingPong, 0.32);
-    playClip(craneMixer, craneClips, /boom-open/i, THREE.LoopPingPong, 0.42);
-    playClip(craneMixer, craneClips, /hoist-open/i, THREE.LoopPingPong, 0.56);
-
-    const rotaryRoot = rotaryScene.clone(true);
-    rotaryRoot.position.set(-9, 0.12, 7);
-    rotaryRoot.scale.setScalar(0.78);
-    assembly.add(rotaryRoot);
-    const rotaryMixer = new THREE.AnimationMixer(rotaryRoot);
-    playClip(rotaryMixer, rotaryClips, /spin/i, THREE.LoopRepeat, 0.8);
-
-    // One shared luminous wire material turns every imported solid surface into a clean blueprint.
-    applyWireframe(assembly, '#00f4d2', 0.88);
-    return {
-      root: fitModelToWorld(assembly, targetWidth),
-      mixers: [craneMixer, rotaryMixer]
-    };
-  }
-
-  async function loadOilRigScenes() {
-    const [platform, crane, rotary] = await Promise.all([
-      loader.loadAsync(ASSETS.oilPlatform),
-      loader.loadAsync(ASSETS.oilCrane),
-      loader.loadAsync(ASSETS.rotaryTable)
-    ]);
-    // Each offshore platform receives its own crane/rotary animation mixers.
-    return [
-      buildOilAssembly(platform.scene, crane.scene, crane.animations, rotary.scene, rotary.animations, 82),
-      buildOilAssembly(platform.scene, crane.scene, crane.animations, rotary.scene, rotary.animations, 68)
-    ];
-  }
-
-  async function loadNuclearScene() {
-    const gltf = await loader.loadAsync(ASSETS.nuclearStation);
-    applyWireframe(gltf.scene, '#a6ff45', 0.9);
-    return fitModelToWorld(gltf.scene, 104);
-  }
-
-  function resetScene(trackIndex) {
-    const generation = ++loadGeneration;
-    activeTrack = trackIndex;
-    activeGroup = new THREE.Group();
-    activeMixers = [];
-    scene.clear();
-    scene.add(activeGroup);
-
-    if (trackIndex === OIL_TRACK) {
-      const first = fallbackOilRig();
-      const second = fallbackOilRig();
-      mountAtTrack(activeGroup, first, trackIndex, 430, 116, 1);
-      mountAtTrack(activeGroup, second, trackIndex, 2220, -132, 0.86);
-      addTrackBeacons(activeGroup, trackIndex, [430, 2220], '#00f4d2');
-    } else {
-      const fallback = fallbackNuclearPlant();
-      mountAtTrack(activeGroup, fallback, trackIndex, 620, 122, 1);
-      mountAtTrack(activeGroup, fallback, trackIndex, 1920, -128, 0.84, true);
-      addTrackBeacons(activeGroup, trackIndex, [620, 1920], '#a6ff45');
-    }
-
-    const task = trackIndex === OIL_TRACK ? loadOilRigScenes() : loadNuclearScene();
-    task.then(result => {
-      if (generation !== loadGeneration || activeTrack !== trackIndex || !activeGroup) return;
-      activeGroup.clear();
-      activeMixers = [];
-      if (trackIndex === OIL_TRACK) {
-        const rigs = result;
-        mountAtTrack(activeGroup, rigs[0].root, trackIndex, 430, 116, 1);
-        mountAtTrack(activeGroup, rigs[1].root, trackIndex, 2220, -132, 0.86);
-        for (const rig of rigs) activeMixers.push(...rig.mixers);
-        addTrackBeacons(activeGroup, trackIndex, [430, 2220], '#00f4d2');
-        window.__nrIndustrialAssetsStatus =
-          'CC0 offshore platforms loaded; both pedestal cranes slew, boom and hoist, and both rotary tables spin.';
-      } else {
-        mountAtTrack(activeGroup, result, trackIndex, 620, 122, 1);
-        mountAtTrack(activeGroup, result, trackIndex, 1920, -128, 0.84, true);
-        addTrackBeacons(activeGroup, trackIndex, [620, 1920], '#a6ff45');
-        window.__nrIndustrialAssetsStatus = 'CC0 nuclear power-station wireframe loaded.';
-      }
-    }).catch(error => {
-      if (generation !== loadGeneration || activeTrack !== trackIndex) return;
-      window.__nrIndustrialAssetsStatus =
-        'CC0 model download failed; procedural wireframe industrial landmarks remain active.';
-      console.warn('Industrial CC0 GLB download failed; the built-in wireframe fallback remains visible.', error);
-    });
-  }
-
-  function resize() {
-    if (!renderer) return;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.2));
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
-    if (camera) {
-      camera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
-      camera.updateProjectionMatrix();
-    }
-  }
-  window.addEventListener('resize', resize, { passive: true });
-
-  function frame(now) {
-    requestAnimationFrame(frame);
-    const state = window.__realCarState;
-    const trackIndex = state && state.racing ? Number(state.trackIndex) : -1;
-
-    if (trackIndex !== OIL_TRACK && trackIndex !== NUCLEAR_TRACK) {
-      if (activeTrack !== -1 && scene) {
-        ++loadGeneration;
-        activeTrack = -1;
-        activeGroup = null;
-        activeMixers = [];
-        scene.clear();
-      }
-      if (canvas) canvas.style.display = 'none';
-      lastFrame = now;
-      return;
-    }
-
-    if (!renderer) {
-      if (!rendererInit) rendererInit = ensureRenderer();
-      return;
-    }
-
-    canvas.style.display = 'block';
-    if (activeTrack !== trackIndex) resetScene(trackIndex);
-
-    const dt = lastFrame ? Math.min(0.05, Math.max(0, (now - lastFrame) / 1000)) : 0;
-    lastFrame = now;
-    for (const mixer of activeMixers) mixer.update(dt);
-
-    const eye = [state.camX, state.camY, state.camZ];
-    const target = [state.targetX, state.targetY, state.targetZ];
-    const up = state.cameraUp || [0, 1, 0];
-    camera.position.set(eye[0], eye[1], eye[2]);
-    camera.up.set(up[0], up[1], up[2]);
-    camera.lookAt(target[0], target[1], target[2]);
-    camera.fov = Number.isFinite(state.fov) ? state.fov : 59;
-    camera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
-    camera.near = 0.1;
-    camera.far = 6500;
-    camera.updateProjectionMatrix();
-    renderer.render(scene, camera);
-  }
-
-  window.__nrIndustrialWireframeFrame = frame;
-  requestAnimationFrame(frame);
+ }).catch(e=>{if(gen!==generation)return;window.__nrIndustrialAssetsStatus='Procedural wireframe fallback active; CC0 GLB download failed.';console.warn('Industrial CC0 GLB failed:',e);});
+}
+function resize(){if(!renderer)return;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.2));renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/Math.max(1,innerHeight);camera.updateProjectionMatrix();}
+addEventListener('resize',resize,{passive:true});
+function frame(now){
+ requestAnimationFrame(frame);
+ const s=window.__realCarState,track=s&&s.racing?Number(s.trackIndex):-1;
+ if(track!==OIL&&track!==NUCLEAR){if(active!==-1&&scene){++generation;active=-1;group=null;mixers=[];scene.clear();}if(canvas)canvas.style.display='none';last=now;return;}
+ if(!renderer){if(!initPromise)init();return;}
+ canvas.style.display='block';if(active!==track)reset(track);
+ const dt=last?Math.min(.05,(now-last)/1000):0;last=now;mixers.forEach(m=>m.update(dt));
+ const eye=[s.camX,s.camY,s.camZ],target=[s.targetX,s.targetY,s.targetZ],up=s.cameraUp||[0,1,0];
+ camera.position.set(...eye);camera.up.set(...up);camera.lookAt(...target);camera.fov=s.fov||59;camera.aspect=innerWidth/Math.max(1,innerHeight);camera.updateProjectionMatrix();
+ renderer.render(scene,camera);
+}
+requestAnimationFrame(frame);
 })();
 </script>
 
