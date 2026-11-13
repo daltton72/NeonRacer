@@ -6394,39 +6394,39 @@ function customTrackCenterAtT(index,t){
  if(index===33){const c=Math.cos(t),s=Math.sin(t),k=1.48,n=Math.tanh(k),x=690*Math.tanh(k*c)/n+24*Math.sin(3*t+.16),z=455*Math.tanh(k*s)/n+16*Math.cos(2*t-.24);const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};return{x,y:34+8*Math.sin(2*t+.25)+lift(.88,.38,29)+lift(3.98,.40,32),z,t};}
  if(index===34){const x=600*Math.sin(t)+92*Math.sin(3*t+.12),z=420*Math.cos(t)+54*Math.cos(3*t-.2);const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};return{x,y:40+9*Math.sin(2*t+.18)+lift(.72,.36,31)+lift(2.28,.37,36)+lift(3.92,.36,30)+lift(5.42,.37,34),z,t};}
  if(index===35){
-  // SKYFORGE: a wide metropolitan oval with two elevated expressway crests and flowing S-transitions.
-  const x=670*Math.sin(t)+92*Math.sin(3*t+.18)+24*Math.sin(5*t-.2);
-  const z=465*Math.cos(t)-66*Math.cos(2*t+.16)+18*Math.sin(4*t);
+  // SKYFORGE: fast metropolitan oval with two broad elevated expressway crests.
+  const x=680*Math.sin(t)+66*Math.sin(3*t+.18);
+  const z=470*Math.cos(t)-44*Math.cos(2*t+.16);
   const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};
-  return{x,y:48+10*Math.sin(2*t+.2)+5*Math.sin(4*t-.3)+lift(.82,.39,58)+lift(3.72,.40,52),z,t};
+  return{x,y:44+4*Math.sin(2*t+.2)+3*Math.sin(4*t-.3)+lift(.82,.82,34)+lift(3.72,.82,30),z,t};
  }
  if(index===36){
-  // PELAGIC: broad twin oceanic sweeps, with two smooth pressure-dome overpasses.
-  const x=620*Math.sin(t)+86*Math.sin(3*t+.25);
-  const z=445*Math.cos(t)+62*Math.cos(3*t-.14);
+  // PELAGIC: deep-ocean double sweeps and smooth pressure-dome overpasses.
+  const x=630*Math.sin(t)+58*Math.sin(3*t+.25);
+  const z=455*Math.cos(t)+42*Math.cos(3*t-.14);
   const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};
-  return{x,y:28+7*Math.sin(2*t+.3)+lift(1.12,.42,36)+lift(4.18,.42,40),z,t};
+  return{x,y:28+3.5*Math.sin(2*t+.3)+lift(1.12,.85,25)+lift(4.18,.85,27),z,t};
  }
  if(index===37){
-  // FROSTLINE: a large polar circuit with long arctic straights and broad, bankable sweeps.
-  const x=660*Math.sin(t)+94*Math.sin(3*t+.1)+25*Math.sin(5*t+.2);
-  const z=455*Math.cos(t)-74*Math.cos(3*t-.12);
+  // FROSTLINE: long arctic straights and broad polar sweeps.
+  const x=670*Math.sin(t)+66*Math.sin(3*t+.1);
+  const z=465*Math.cos(t)-58*Math.cos(3*t-.12);
   const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};
-  return{x,y:66+9*Math.sin(2*t-.2)+lift(.92,.37,46)+lift(3.92,.38,54),z,t};
+  return{x,y:66+4.5*Math.sin(2*t-.2)+lift(.92,.82,32)+lift(3.92,.82,36),z,t};
  }
  if(index===38){
-  // DUNE TITAN: a broad desert speed ring, interrupted by three enormous but gentle ramp crests.
-  const x=710*Math.sin(t)+68*Math.sin(3*t+.22);
-  const z=430*Math.cos(t)+54*Math.sin(2*t-.1);
+  // DUNE TITAN: broad desert speed ring and three long, smooth ramp crests.
+  const x=710*Math.sin(t)+52*Math.sin(3*t+.22);
+  const z=440*Math.cos(t)+42*Math.sin(2*t-.1);
   const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};
-  return{x,y:38+7*Math.sin(2*t+.12)+lift(.78,.34,48)+lift(2.82,.36,56)+lift(5.05,.35,50),z,t};
+  return{x,y:38+4*Math.sin(2*t+.12)+lift(.78,.82,32)+lift(2.82,.82,36)+lift(5.05,.82,33),z,t};
  }
  if(index===39){
-  // ECLIPSE: an orbital forge route with a double-lobed footprint and separated high/low arcs.
-  const x=600*Math.sin(t)+142*Math.sin(2*t+.26);
-  const z=440*Math.cos(t)-96*Math.cos(2*t+.26);
+  // ECLIPSE: orbital forge course with broad, separated arcs and moderate grades.
+  const x=610*Math.sin(t)+80*Math.sin(2*t+.26);
+  const z=460*Math.cos(t)-55*Math.cos(2*t+.26);
   const lift=(a,w,h)=>{const d=Math.abs(customAngleDelta(t,a));if(d>=w)return 0;const u=1-d/w;return h*(.5-.5*Math.cos(Math.PI*u));};
-  return{x,y:76+36*Math.sin(2*t+.12)+12*Math.sin(3*t-.2)+lift(.76,.40,46)+lift(3.86,.42,58),z,t};
+  return{x,y:68+10*Math.sin(2*t+.12)+4*Math.sin(3*t-.2)+lift(.76,.93,22)+lift(3.86,.93,24),z,t};
  }
  if(index===8){
   // Track 9 keeps its broad modular oval but curls one long section into a smooth
