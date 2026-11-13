@@ -7905,29 +7905,29 @@ void main(){
 
  // Page-five sky treatments: aurora megacity, abyssal ocean, polar lights, desert sun and orbital starfield.
  if(uTrackIndex>34.5&&uTrackIndex<35.5){
-  nightTop=vec3(.006,.015,.045);nightHorizon=vec3(.025,.13,.22);
+  nightTop=vec3(.006,.015,.045);nightHorizon=vec3(.025,.13,.22);sky=mix(mix(nightHorizon,nightTop,smoothstep(.53,.98,y)),daySky,solar);
   float auroraA=pow(max(0.0,.5+.5*sin(uv.x*uAspect*7.2+sin(y*17.0+uTime*.09)*2.5)),7.0);
-  float auroraB=exp(-pow((y-(.70+.035*sin(uv.x*uAspect*4.0-uTime*.025))*13.0,2.0));
+  float auroraB=exp(-pow((y-(.70+.035*sin(uv.x*uAspect*4.0-uTime*.025)))*13.0,2.0));
   sky+=vec3(.018,.25,.42)*auroraA*smoothstep(.58,.94,y)+vec3(.025,.12,.26)*auroraB;
  }
  if(uTrackIndex>35.5&&uTrackIndex<36.5){
-  nightTop=vec3(.001,.012,.028);nightHorizon=vec3(.002,.075,.12);
+  nightTop=vec3(.001,.012,.028);nightHorizon=vec3(.002,.075,.12);sky=mix(mix(nightHorizon,nightTop,smoothstep(.53,.98,y)),daySky,solar);
   float abyssGlow=exp(-pow((y-.60)*6.0,2.0));
   float biolume=pow(max(0.0,.5+.5*sin(uv.x*uAspect*16.0+y*22.0+uTime*.055)),10.0);
   sky+=vec3(.002,.09,.14)*abyssGlow+vec3(.005,.20,.22)*biolume*smoothstep(.55,.88,y);
  }
  if(uTrackIndex>36.5&&uTrackIndex<37.5){
-  nightTop=vec3(.008,.018,.055);nightHorizon=vec3(.045,.12,.23);
+  nightTop=vec3(.008,.018,.055);nightHorizon=vec3(.045,.12,.23);sky=mix(mix(nightHorizon,nightTop,smoothstep(.53,.98,y)),daySky,solar);
   float polarWave=pow(max(0.0,.5+.5*sin(uv.x*uAspect*6.5+sin(uv.x*uAspect*2.0+uTime*.035)*2.2+y*16.0)),8.0);
   sky+=vec3(.045,.24,.38)*polarWave*smoothstep(.56,.91,y);
  }
  if(uTrackIndex>37.5&&uTrackIndex<38.5){
-  nightTop=vec3(.16,.055,.025);nightHorizon=vec3(.52,.22,.075);
+  nightTop=vec3(.16,.055,.025);nightHorizon=vec3(.52,.22,.075);sky=mix(mix(nightHorizon,nightTop,smoothstep(.53,.98,y)),daySky,solar);
   float heatHaze=exp(-pow((y-.60)*6.8,2.0));
   sky+=vec3(.16,.075,.022)*heatHaze;
  }
  if(uTrackIndex>38.5&&uTrackIndex<39.5){
-  nightTop=vec3(.012,.006,.04);nightHorizon=vec3(.12,.035,.18);
+  nightTop=vec3(.012,.006,.04);nightHorizon=vec3(.12,.035,.18);sky=mix(mix(nightHorizon,nightTop,smoothstep(.53,.98,y)),daySky,solar);
   vec2 orbitCell=floor(uv*vec2(154.0,92.0));float orbitHash=skyHash(orbitCell);
   float orbitStars=step(.994,orbitHash)*smoothstep(.52,.94,y);
   float eclipseHalo=exp(-pow((y-.60)*8.0,2.0));
@@ -10003,8 +10003,8 @@ function addPageFiveWorldScenery(b,index,accent,accent2){
   const s0=station+(row%2?24:0),sideOrder=row%2?[-1,1]:[1,-1];
   for(const side of sideOrder){
    const near=side*(38+(row%3)*3),mid=side*(77+(row%4)*4),far=side*(132+(row%3)*7);
-   outlineBox(near,0,s0,26,34,16,18,s0,dark,[.015,.055,.08],6);
-   outlineBox(mid,0,s0+18,48,72,31,24,s0,glass,[.02,.08,.12],6);
+   outlineBox(near,0,s0,26,34,18,s0,dark,[.015,.055,.08],6);
+   outlineBox(mid,0,s0+18,48,72,31,s0,glass,[.02,.08,.12],6);
    box(mid-25,72,s0-1,mid+25,74,s0+37,trim,glow,3,s0);
    for(let bay=0;bay<5;bay++){
     const xx=mid-20+bay*10;
@@ -10016,8 +10016,8 @@ function addPageFiveWorldScenery(b,index,accent,accent2){
    edge([mid,30,s0+20],[far,34,s0+8],steel,[.02,.08,.11],s0);
    if(index===35){
     // SKYFORGE: stepped arcology towers, transit piers and a dense elevated skyline.
-    outlineBox(side*54,0,s0-47,32,110,30,29,s0,glass,[.02,.08,.12],6);
-    outlineBox(side*104,0,s0+48,28,145,28,42,s0,steel,[.025,.10,.16],6);
+    outlineBox(side*54,0,s0-47,32,40,110,s0,glass,[.02,.08,.12],6);
+    outlineBox(side*104,0,s0+48,28,28,145,s0,steel,[.025,.10,.16],6);
     for(let level=0;level<6;level++){
      const yy=24+level*18;
      edge([side*39,yy,s0-58],[side*70,yy+9,s0-43],trim,glow,s0,3);
@@ -10031,7 +10031,7 @@ function addPageFiveWorldScenery(b,index,accent,accent2){
     // PELAGIC: pressure-rated habitat domes, seafloor works and umbilical towers.
     dome(side*54,s0-26,8,29,40,s0);
     dome(side*105,s0+45,5,23,32,s0);
-    outlineBox(side*80,0,s0-78,34,24,28,34,s0,dark,[.018,.07,.10],6);
+    outlineBox(side*80,0,s0-78,34,28,24,s0,dark,[.018,.07,.10],6);
     for(let q=0;q<4;q++){
      const xx=side*(34+q*17);
      tank(xx,s0+76,0,25+q%2*7,7+q%2*1.5,s0);
@@ -10047,7 +10047,7 @@ function addPageFiveWorldScenery(b,index,accent,accent2){
     gantry(side*83,s0+104,96,22,45,s0);
    }else if(index===37){
     // FROSTLINE: polar laboratories, ice-core towers, turbines and aurora receivers.
-    outlineBox(side*56,0,s0-42,40,38,26,34,s0,glass,[.02,.09,.14],6);
+    outlineBox(side*56,0,s0-42,40,38,26,s0,glass,[.02,.09,.14],6);
     for(let k=0;k<3;k++){
      const xx=side*(100+k*30),hh=76+k*17;
      edge([xx,0,s0+35],[xx,hh,s0+35],trim,glow,s0,3);
@@ -10058,13 +10058,13 @@ function addPageFiveWorldScenery(b,index,accent,accent2){
     turbine(side*92,s0-82,116,s0);
     turbine(side*148,s0-24,98,s0);
     radar(side*58,s0+80,66,22,s0);
-    outlineBox(side*122,0,s0+105,55,27,22,28,s0,steel,[.018,.07,.11],6);
+    outlineBox(side*122,0,s0+105,55,27,28,s0,steel,[.018,.07,.11],6);
     gantry(side*72,s0-112,84,28,48,s0);
    }else if(index===38){
     // DUNE TITAN: utility-scale solar farms, wind turbines and thermal receivers.
     for(let q=0;q<3;q++)solarArray(side*(52+q*38),s0-76+q*54,58,62,s0);
     turbine(side*150,s0+65,132,s0);
-    outlineBox(side*48,0,s0+82,36,58,32,34,s0,steel,[.02,.07,.10],6);
+    outlineBox(side*48,0,s0+82,36,32,58,s0,steel,[.02,.07,.10],6);
     for(let q=0;q<12;q++){
      const a=q/12*Math.PI*2,xx=side*105+Math.cos(a)*14,zz=s0+48+Math.sin(a)*14;
      edge([xx,0,zz],[xx,126,zz],trim,glow,s0,3);
@@ -10077,7 +10077,7 @@ function addPageFiveWorldScenery(b,index,accent,accent2){
     gantry(side*132,s0-112,66,28,33,s0);
    }else if(index===39){
     // ECLIPSE: full-scale launch port, orbital dish farm and rocket assembly hall.
-    outlineBox(side*52,0,s0-68,78,42,42,34,s0,dark,[.02,.09,.13],6);
+    outlineBox(side*52,0,s0-68,78,42,42,s0,dark,[.02,.09,.13],6);
     gantry(side*122,s0+10,64,62,152,s0);
     for(let q=0;q<3;q++){
      const rx=side*(88+q*28),rz=s0-105+q*94;
