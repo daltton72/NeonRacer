@@ -1,4 +1,4 @@
-<!-- NEON RACER v33.98: v31.83 steering controller, inverted direction, auto-on, no tilt toggle; preserve NOS, drift and gameplay. -->
+<!-- FULL THROTTLE v33.98: v31.83 steering controller, inverted direction, auto-on, no tilt toggle; preserve NOS, drift and gameplay. -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -70,7 +70,7 @@ body.track-preview-active #realCarLayer{z-index:4}#vehicleLightFX{position:fixed
 }
 @media (max-width:900px) and (orientation:portrait){
  body:before{content:"ROTATE YOUR PHONE";position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:30px;text-align:center;background:radial-gradient(ellipse at center,rgba(0,40,48,.98),#02070a 72%);color:#cafff5;font-size:clamp(22px,7vw,38px);font-weight:1000;font-style:italic;letter-spacing:.12em;text-shadow:0 0 18px #00ffc2}
- body:after{content:"NEON RACER IS DESIGNED FOR LANDSCAPE PLAY  •  TURN YOUR PHONE SIDEWAYS";position:fixed;inset:55% 8% auto;z-index:2147483647;text-align:center;color:#7edbdc;font-size:10px;letter-spacing:.16em;line-height:1.8;pointer-events:none}
+ body:after{content:"FULL THROTTLE IS DESIGNED FOR LANDSCAPE PLAY  •  TURN YOUR PHONE SIDEWAYS";position:fixed;inset:55% 8% auto;z-index:2147483647;text-align:center;color:#7edbdc;font-size:10px;letter-spacing:.16em;line-height:1.8;pointer-events:none}
 }
 </style>
 <style id="scenic-track-preview-styles">
@@ -2821,13 +2821,13 @@ body>#carPaintPanel.is-portaled.open .paint-note{display:none!important}
 
 </head>
 <body>
-<div id="nrStartupLoader" role="status" aria-live="polite" aria-label="NEON RACER is starting">
+<div id="nrStartupLoader" role="status" aria-live="polite" aria-label="FULL THROTTLE is starting">
  <div class="nr-boot-grid"></div><div class="nr-boot-scan"></div>
  <main class="nr-boot-shell">
   <header class="nr-boot-header">
    <div class="nr-boot-brand">
     <span class="nr-boot-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 24 12 7h5l-7 17H5Zm9 0 7-17h6l-7 17h-6Z"/><path d="M4 27h22"/></svg></span>
-    <span><strong>NEON RACER</strong><small>ADVANCED STREET RACING SYSTEMS</small></span>
+    <span><strong>FULL THROTTLE</strong><small>ADVANCED STREET RACING SYSTEMS</small></span>
    </div>
    <div class="nr-boot-header-tag"><b>BOOT SEQUENCE // 33.70</b>SECURE LINK · GRAPHICS CORE · VEHICLE OS</div>
   </header>
@@ -2905,11 +2905,11 @@ body>#carPaintPanel.is-portaled.open .paint-note{display:none!important}
     <div class="nr-boot-visual-label">AERODYNAMIC CHASSIS · SYSTEM SCAN</div>
    </div>
   </section>
-  <footer class="nr-boot-footer"><span>NEON RACER // DIGITAL MOTORSPORT</span><span>ENGINEERED FOR THE EDGE · BUILT TO RUN</span></footer>
+  <footer class="nr-boot-footer"><span>FULL THROTTLE // DIGITAL MOTORSPORT</span><span>ENGINEERED FOR THE EDGE · BUILT TO RUN</span></footer>
  </main>
 </div>
 
-<canvas id="world" aria-label="NEON RACER 3D racing world"></canvas><canvas id="realCarLayer" aria-hidden="true"></canvas><canvas id="vehicleLightFX" aria-hidden="true"></canvas><div id="fx"></div><div id="modelAssetStatus" role="status" style="display:none;position:fixed;left:50%;top:68px;transform:translateX(-50%);z-index:5;max-width:calc(100vw - 32px);padding:10px 14px;border:1px solid rgba(255,110,110,.7);background:rgba(25,5,8,.94);color:#ffd5d5;font:600 11px/1.45 system-ui,sans-serif;letter-spacing:.04em;text-align:center;pointer-events:none"></div>
+<canvas id="world" aria-label="FULL THROTTLE 3D racing world"></canvas><canvas id="realCarLayer" aria-hidden="true"></canvas><canvas id="vehicleLightFX" aria-hidden="true"></canvas><div id="fx"></div><div id="modelAssetStatus" role="status" style="display:none;position:fixed;left:50%;top:68px;transform:translateX(-50%);z-index:5;max-width:calc(100vw - 32px);padding:10px 14px;border:1px solid rgba(255,110,110,.7);background:rgba(25,5,8,.94);color:#ffd5d5;font:600 11px/1.45 system-ui,sans-serif;letter-spacing:.04em;text-align:center;pointer-events:none"></div>
 <div class="topline" id="topline"><div class="microbrand">NEON <span>RACER</span></div><div class="toptools"><div class="chip"><span style="color:var(--mint)">●</span> LIVE CIRCUIT</div><div class="chip">CREDITS <b id="creditsTop">3,200</b></div></div></div>
 <section class="screen active" id="homeScreen"><div class="view"><div class="menu-layout"><div class="menu-left"><div class="eyebrow">Next-generation street racing</div><div class="logo">NEON<span class="second">RACER</span></div><div class="tagline">SPEED&nbsp; · &nbsp;SKILL&nbsp; · &nbsp;SURVIVAL</div><div class="button-stack"><button class="neon-btn primary" id="playBtn"><span class="button-icon">▶</span><span class="button-title">Play now</span><small class="button-sub">Enter the circuit</small></button><button class="neon-btn" data-page="garage"><span class="button-icon">▱</span><span class="button-title">Garage</span><small class="button-sub">Cars and performance</small></button><button class="neon-btn" data-page="tracks"><span class="button-icon">◎</span><span class="button-title">Tracks</span><small class="button-sub">Choose your battleground</small></button><button class="neon-btn" data-page="upgrades"><span class="button-icon">ϟ</span><span class="button-title">Upgrades</span><small class="button-sub">Tune your machine</small></button><button class="neon-btn" data-page="leaderboard"><span class="button-icon">♜</span><span class="button-title">Leaderboard</span><small class="button-sub">Circuit champions</small></button><button class="neon-btn" data-page="settings"><span class="button-icon">⚙</span><span class="button-title">Settings</span><small class="button-sub">Rendering and controls</small></button><button class="neon-btn" data-page="info"><span class="button-icon">ⓘ</span><span class="button-title">Info</span><small class="button-sub">Credits, 3D assets and licenses</small></button></div><div class="menu-foot">REAL-TIME 3D <b>◆</b> NEON CIRCUITS <b>◆</b> NO DOWNLOADS</div></div><div class="home-info"><button class="neon-btn nr-multiplayer-home" id="nrMultiplayerHomeBtn" type="button"><span class="button-icon">⚡</span><span class="button-title">Multiplayer</span><small class="button-sub">Race other drivers online</small></button><div class="info-tile"><strong id="homeCarName">VOLT S7</strong><span>Selected vehicle</span></div><div class="info-tile"><strong id="homeTrackName">NEON CITY</strong><span>Current circuit</span></div><div class="info-tile"><strong id="homeBest">--:--.---</strong><span>Personal best</span></div></div></div></div></section>
 <section class="screen" id="multiplayerScreen">
@@ -2937,7 +2937,7 @@ body>#carPaintPanel.is-portaled.open .paint-note{display:none!important}
      <label>TRACK<select id="nrMpTrack"><option>Random circuit</option><option>Neon City</option><option>Coastal Run</option><option>Industrial District</option></select></label>
      <label>RACE RULES<select id="nrMpRules"><option>Standard race · 3 laps</option><option>Sprint · point to point</option><option>Elimination · last place out</option><option>Time attack · 2 minutes</option></select></label>
     </div>
-    <div class="nr-mp-chat"><div class="nr-mp-roster-head"><strong>LOBBY CHAT</strong><span>LIVE ROOM</span></div><div id="nrMpChatLog">SYSTEM: Welcome to the Neon Racer lobby.</div><div><input id="nrMpChatInput" maxlength="100" placeholder="Message your lobby..."><button id="nrMpChatSend" type="button">SEND</button></div></div>
+    <div class="nr-mp-chat"><div class="nr-mp-roster-head"><strong>LOBBY CHAT</strong><span>LIVE ROOM</span></div><div id="nrMpChatLog">SYSTEM: Welcome to the Full Throttle lobby.</div><div><input id="nrMpChatInput" maxlength="100" placeholder="Message your lobby..."><button id="nrMpChatSend" type="button">SEND</button></div></div>
     <div class="nr-mp-lobby-footer"><button id="nrMpReady" class="neon-btn primary" type="button">READY UP</button><button id="nrMpHostStart" class="neon-btn" type="button">HOST START</button><button id="nrMpLeave" class="neon-btn" type="button">LEAVE LOBBY</button></div>
    </div>
   </div>
@@ -2966,7 +2966,7 @@ body>#carPaintPanel.is-portaled.open .paint-note{display:none!important}
 <p><a href="https://kenney.nl/assets/city-kit-commercial" target="_blank" rel="noopener">Kenney — City Kit (Commercial)</a> · <a href="https://github.com/Hidencod/tge-assets" target="_blank" rel="noopener">GLB asset mirror / pack information</a>.</p>
 </div>
 <div class="info-card"><h2>Neon Block environment asset</h2><p>The Neon Block building model is loaded from the developer Cloudflare R2 asset library and identified as part of the Cyberpunk Apartment and Neon Block CC0 collection. Original pack information: <a href="https://3dassets.dev/packs/cyberpunk-apartment-and-neon-block" target="_blank" rel="noopener">3DAssets.dev — Cyberpunk Apartment and Neon Block</a>. CC0 1.0 Universal.</p></div>
-<div class="info-card"><h2>About this game</h2><p><strong>NEON RACER</strong> is an independently developed 3D racing game. Vehicle names and marks belong to their respective owners; their appearance in the game does not imply endorsement or affiliation.</p><p class="info-note">Credits and license information are provided for transparency. Please consult the linked original license terms for the exact permissions and conditions.</p></div>
+<div class="info-card"><h2>About this game</h2><p><strong>FULL THROTTLE</strong> is an independently developed 3D racing game. Vehicle names and marks belong to their respective owners; their appearance in the game does not imply endorsement or affiliation.</p><p class="info-note">Credits and license information are provided for transparency. Please consult the linked original license terms for the exact permissions and conditions.</p></div>
 </div></div></section>
 <section class="screen" id="tracksScreen"><div class="page-layout"><div class="page-heading"><div><h1>Track selection</h1><p>Thirty-five circuits. Five pages of high-speed routes.</p></div><div class="track-heading-right"><div class="track-page-tabs" role="group" aria-label="Track pages"><button class="track-page-button active" id="trackPageOne" aria-label="Page 1" aria-pressed="true">1</button><button class="track-page-button" id="trackPageTwo" aria-label="Page 2" aria-pressed="false">2</button><button class="track-page-button" id="trackPageThree" aria-label="Page 3" aria-pressed="false">3</button></div><button class="back" data-home>← Back</button></div></div><div class="track-grid" id="trackGrid"></div><div class="actions"><div class="chip">SELECTED <b id="selectedTrackName">NEON CITY</b></div><div class="mode-actions"><button class="neon-btn" id="trackRaceBtn">RACE THIS TRACK&nbsp; →</button></div></div></div></section>
 <section class="screen" id="garageScreen"><div class="page-layout"><div class="page-heading"><div><h1>Garage</h1><p>Choose your line. Own the night.</p></div><button class="back" data-home>← Back</button></div><div class="two-col"><div class="glass-panel garage-preview"><div class="garage-copy"><div class="garage-name" id="garageCarName">VOLT S7</div><div class="garage-spec" id="garageSpec">BALANCED HYPERCOUPE · CLASS S</div></div><div class="car-choice" id="carChoice"></div></div><div class="glass-panel stats-panel"><h3 class="stats-title">PERFORMANCE PROFILE</h3><div id="garageStats"></div><div style="height:15px"></div><button class="neon-btn primary" style="width:100%;text-align:center" id="garageSelectBtn">SELECT VEHICLE</button></div></div></div></section>
@@ -5753,7 +5753,7 @@ function rcGetVehicleLampMeshes(asset){
     hasNativeTailLamps,placementAudit,headLens:rcBuildLampPart(headLens,1),headCore:rcBuildLampPart(headCore,1),dimensions:[w,h,l],rearZ,frontZ,id
   };
   window.__vehicleLampPlacementDiagnostics=placementAudit;
-  if(!asset.__lampMeshes.__auditLogged){console.info('Neon Racer vehicle lamp audit:',placementAudit);asset.__lampMeshes.__auditLogged=true;}
+  if(!asset.__lampMeshes.__auditLogged){console.info('Full Throttle vehicle lamp audit:',placementAudit);asset.__lampMeshes.__auditLogged=true;}
   return asset.__lampMeshes;
 }
 function rcDrawLampPart(part,mvp,model,camera,color,emission,rough=.24){
@@ -6132,7 +6132,7 @@ const impactFxCtx=impactFxCanvas.getContext('2d',{alpha:true});
 const wallSparkSprite=new Image();wallSparkSprite.decoding='async';wallSparkSprite.src='https://opengameart.org/sites/default/files/spark_sprite_strip9_0.png';
 function resizeImpactFxCanvas(){if(!impactFxCanvas)return;impactFxCanvas.width=Math.max(1,screenW||innerWidth);impactFxCanvas.height=Math.max(1,screenH||innerHeight);impactFxCanvas.style.width=innerWidth+'px';impactFxCanvas.style.height=innerHeight+'px';}
 
-if(!gl){document.body.innerHTML='<div style="padding:40px;color:#dff;background:#02080d;font:18px system-ui">NEON RACER needs WebGL, which appears to be disabled in this browser. Enable hardware acceleration and reload.</div>';return;}
+if(!gl){document.body.innerHTML='<div style="padding:40px;color:#dff;background:#02080d;font:18px system-ui">FULL THROTTLE needs WebGL, which appears to be disabled in this browser. Enable hardware acceleration and reload.</div>';return;}
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
 const hex=h=>{h=h.replace('#','');return [parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255]};
 // The third track is a true single-loop figure eight. Its second pass over the center crossing
@@ -6271,7 +6271,7 @@ const TRACKS=[
  {name:'ECLIPSE: ORBITAL FORGE',difficulty:'EXTREME',length:0,accent:'#c18aff',accent2:'#ff9d67',glow:'#bd78ff',sky:'#100821',kind:39,day:false,desc:'SIX LAUNCH CAMPUSES · ORBITAL RING NETWORK · HEAVY-LIFT ASSEMBLY DISTRICT'},
 ];
 // Native route adaptations inspired by the TORCS Multi Cross 7, Over Under 2 and Skyline Ridge layouts.
-// These are rebuilt in Neon Racer's own road system so AI, collisions, camera and car orientation share one route.
+// These are rebuilt in Full Throttle's own road system so AI, collisions, camera and car orientation share one route.
 const CUSTOM_TRACK_TAU=Math.PI*2;
 // Track 5 is a broad, non-intersecting high-speed circuit with flowing corner transitions.
 const customWrap=(v,m)=>((v%m)+m)%m;
@@ -11351,7 +11351,7 @@ function nrStartDriveFileAudio(){
   if(!nrEngineFileAudio){nrEngineFileAudio=new Audio(NR_RACE_AUDIO_BASE+'engine.mp3');nrEngineFileAudio.loop=true;nrEngineFileAudio.preload='auto';nrEngineFileAudio.volume=.48;}
   nrEngineFileAudio.playbackRate=.82;
   const p=nrEngineFileAudio.play();if(p&&p.catch)p.catch(()=>{});
- }catch(e){console.warn('NEON RACER: engine audio unavailable',e);}
+ }catch(e){console.warn('FULL THROTTLE: engine audio unavailable',e);}
 }
 function nrUpdateDriveFileAudio(){
  if(document.hidden||!rcCanPlayAudioOnline()||!race.active||race.paused){
@@ -11374,7 +11374,7 @@ function nrUpdateDriveFileAudio(){
    nrDriftFileAudio.playbackRate=clamp(.88+(race.speed||0)/900,.88,1.35);
    if(nrDriftFileAudio.paused){const p=nrDriftFileAudio.play();if(p&&p.catch)p.catch(()=>{});}
   }else nrStopDriftFileAudio();
- }catch(e){console.warn('NEON RACER: driving audio update failed',e);}
+ }catch(e){console.warn('FULL THROTTLE: driving audio update failed',e);}
 }
 function nrStopEngineFileAudio(){
  if(nrEngineFileAudio&&!nrEngineFileAudio.paused){try{nrEngineFileAudio.pause();}catch{}}
@@ -11392,7 +11392,7 @@ function nrPlaySpeedAway(){
   if(!nrSpeedAwayAudio){nrSpeedAwayAudio=new Audio(NR_RACE_AUDIO_BASE+'speed_away.mp3');nrSpeedAwayAudio.preload='auto';nrSpeedAwayAudio.volume=.82;}
   nrSpeedAwayAudio.pause();nrSpeedAwayAudio.currentTime=0;
   const p=nrSpeedAwayAudio.play();if(p&&p.catch)p.catch(()=>{});
- }catch(e){console.warn('NEON RACER: race transition audio unavailable',e);}
+ }catch(e){console.warn('FULL THROTTLE: race transition audio unavailable',e);}
 }
 let nrNosAudio=null,nrNosAudioRequested=false,nrNosAudioFailed=false,nrNosAudioWasActive=false,nrNosAudioStartFuel=100;
 function nrSetNosAudio(active){
@@ -11420,7 +11420,7 @@ function nrSetNosAudio(active){
    });
    nrNosAudio.addEventListener('error',()=>{
     nrNosAudioFailed=true;nrNosAudioRequested=false;nrNosAudioWasActive=false;
-    console.warn('NEON RACER: NOS sound could not load:',nrNosAudio.src,nrNosAudio.error);
+    console.warn('FULL THROTTLE: NOS sound could not load:',nrNosAudio.src,nrNosAudio.error);
    });
    nrNosAudio.load();
   }
@@ -11436,12 +11436,12 @@ function nrSetNosAudio(active){
    if(result&&typeof result.catch==='function')result.catch(error=>{
     // A transient autoplay/readiness rejection must not permanently disable NOS.
     nrNosAudioRequested=false;nrNosAudioWasActive=false;
-    console.warn('NEON RACER: NOS sound playback will retry on the next boost press:',error);
+    console.warn('FULL THROTTLE: NOS sound playback will retry on the next boost press:',error);
    });
   }
  }catch(error){
   nrNosAudioRequested=false;nrNosAudioWasActive=false;
-  console.warn('NEON RACER: NOS sound unavailable:',error);
+  console.warn('FULL THROTTLE: NOS sound unavailable:',error);
  }
 }
 function nrDrainNosFromAudio(dt,nosBoost,nitroPower,nitroLevel){
@@ -11472,12 +11472,12 @@ function startRaceMusic(chooseAnother=false){
     // The track often finishes downloading during the cinematic launch, before
     // race.active becomes true. The explicit request flag preserves that intent.
     if(nrRaceMusicRequested&&state.options.musicSound&&rcCanPlayAudioOnline()&&!document.hidden&&!race.paused&&nrRaceMusic.paused){
-     const retry=nrRaceMusic.play();if(retry&&retry.catch)retry.catch(err=>console.warn('NEON RACER: race music playback blocked:',err));
+     const retry=nrRaceMusic.play();if(retry&&retry.catch)retry.catch(err=>console.warn('FULL THROTTLE: race music playback blocked:',err));
     }
    };
    ['canplay','canplaythrough','loadeddata'].forEach(eventName=>nrRaceMusic.addEventListener(eventName,tryStart));
    nrRaceMusic.addEventListener('error',()=>{
-    console.warn('NEON RACER: race music file could not be loaded:',nrRaceMusic.src,nrRaceMusic.error);
+    console.warn('FULL THROTTLE: race music file could not be loaded:',nrRaceMusic.src,nrRaceMusic.error);
     if(nrRaceMusicRequested&&race.active&&!race.paused)toast('RACE MUSIC FILE COULD NOT LOAD');
    });
   }
@@ -11491,8 +11491,8 @@ function startRaceMusic(chooseAnother=false){
   // Attempt immediately during the Play button gesture, then retry on media-ready
   // events even if the cinematic transition has not yet activated the race scene.
   const playPromise=nrRaceMusic.play();
-  if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(err=>console.warn('NEON RACER: initial race music play deferred:',err));
- }catch(err){console.warn('NEON RACER: race music unavailable:',err);}
+  if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(err=>console.warn('FULL THROTTLE: initial race music play deferred:',err));
+ }catch(err){console.warn('FULL THROTTLE: race music unavailable:',err);}
 }
 function pauseRaceMusic(){
  nrSetNosAudio(false);
@@ -11684,15 +11684,15 @@ async function startRace(){
  try{
   await nrPrepareCinematicWorld(launchTrackIndex);
  }catch(error){
-  console.warn('NEON RACER: cinematic scenery preflight failed; attempting the local track fallback.',error);
+  console.warn('FULL THROTTLE: cinematic scenery preflight failed; attempting the local track fallback.',error);
   try{state.selectedTrack=launchTrackIndex;if(!worldGeometryCache[launchTrackIndex])buildWorld(launchTrackIndex);else activateWorldCache(launchTrackIndex);buildBoost();}
-  catch(buildError){console.error('NEON RACER: selected track could not be prepared for cinematic launch.',buildError);nrRaceTransitionBusy=false;startRaceNow();return;}
+  catch(buildError){console.error('FULL THROTTLE: selected track could not be prepared for cinematic launch.',buildError);nrRaceTransitionBusy=false;startRaceNow();return;}
  }
  nrRaceTransitionBusy=true;
  const home=document.getElementById('homeScreen');
  const carCanvas=document.getElementById('realCarLayer');
  const overlay=document.createElement('div');overlay.id='nrLaunchTransition';
- overlay.innerHTML='<div class="nr-launch-blackout"></div><div class="nr-launch-tunnel"><i class="nr-ring nr-ring-a"></i><i class="nr-ring nr-ring-b"></i><i class="nr-ring nr-ring-c"></i><i class="nr-core"></i><i class="nr-rays"></i></div><div class="nr-launch-caption"><small>NEON RACER // GRID SYNCHRONIZATION</small><strong>'+track().name.replace(/[<>]/g,'')+'</strong><span>ENGAGING DRIVE SYSTEMS</span><div class="nr-scanbar"><i></i></div></div><div class="nr-launch-flash"></div>';
+ overlay.innerHTML='<div class="nr-launch-blackout"></div><div class="nr-launch-tunnel"><i class="nr-ring nr-ring-a"></i><i class="nr-ring nr-ring-b"></i><i class="nr-ring nr-ring-c"></i><i class="nr-core"></i><i class="nr-rays"></i></div><div class="nr-launch-caption"><small>FULL THROTTLE // GRID SYNCHRONIZATION</small><strong>'+track().name.replace(/[<>]/g,'')+'</strong><span>ENGAGING DRIVE SYSTEMS</span><div class="nr-scanbar"><i></i></div></div><div class="nr-launch-flash"></div>';
  const style=document.createElement('style');style.id='nrLaunchTransitionStyle';
  style.textContent=`
  #nrLaunchTransition{position:fixed;inset:0;z-index:10050;pointer-events:none;overflow:hidden;opacity:1;background:transparent;animation:nrLaunchFade 280ms ease 1400ms forwards}\n .nr-launch-blackout{position:absolute;inset:0;z-index:0;background:#000;opacity:0;animation:nrBlackoutIn 520ms cubic-bezier(.4,0,.2,1) forwards}
@@ -12505,10 +12505,10 @@ function ensureTrackPreviewWorlds(){
   if(!worldGeometryCache[missing]||!worldGeometryCache[missing].worldMesh)
    throw new Error('The track builder returned no preview mesh.');
  }catch(error){
-  console.warn('NEON RACER: preview build failed for track '+(missing+1)+'; using its local preview fallback.',error);
+  console.warn('FULL THROTTLE: preview build failed for track '+(missing+1)+'; using its local preview fallback.',error);
   if(missing>=32&&missing<=39){
    try{worldGeometryCache[missing]=buildPageFivePreviewFallback(missing);}
-   catch(fallbackError){console.error('NEON RACER: Page 5 fallback preview failed for track '+(missing+1),fallbackError);}
+   catch(fallbackError){console.error('FULL THROTTLE: Page 5 fallback preview failed for track '+(missing+1),fallbackError);}
   }
   if(!window.__nrTrackPreviewBuildErrors)window.__nrTrackPreviewBuildErrors={};
   window.__nrTrackPreviewBuildErrors[missing]=String(error&&error.message||error);
@@ -12899,7 +12899,7 @@ window.addEventListener('resize',()=>{resize();});
 
 // WebGL context recovery and startup diagnostics.
 window.addEventListener('webglcontextlost',e=>{e.preventDefault();toast('GRAPHICS CONTEXT LOST — RELOAD TO RECOVER')});
-try{resize();buildWorld(state.selectedTrack);renderHome();renderTrackCards();renderGarage();renderUpgrades();renderLeaderboard();renderSettings();requestAnimationFrame(loop);rcScheduleBackgroundRimPreload();window.__nrGameInitialized=true;window.dispatchEvent(new Event('nr-game-initialized'))}catch(err){console.error(err);document.body.innerHTML='<pre style="white-space:pre-wrap;color:#dff;background:#02080d;padding:24px">NEON RACER could not initialize its 3D renderer.\\n'+String(err&&err.message||err)+'</pre>'}
+try{resize();buildWorld(state.selectedTrack);renderHome();renderTrackCards();renderGarage();renderUpgrades();renderLeaderboard();renderSettings();requestAnimationFrame(loop);rcScheduleBackgroundRimPreload();window.__nrGameInitialized=true;window.dispatchEvent(new Event('nr-game-initialized'))}catch(err){console.error(err);document.body.innerHTML='<pre style="white-space:pre-wrap;color:#dff;background:#02080d;padding:24px">FULL THROTTLE could not initialize its 3D renderer.\\n'+String(err&&err.message||err)+'</pre>'}
 window.__nrMpBridge={
  getTracks:()=>TRACKS.map((t,i)=>({index:i,name:t.name||('Track '+(i+1))})),
  startRace:(index)=>{const n=Math.max(0,Math.min(TRACKS.length-1,Number(index)||0));state.selectedTrack=n;save();return startRace();},
@@ -13529,7 +13529,7 @@ window.__nrMpBridge={
  #rimShopNavTools #rimShopCredits b{font-size:10px!important}
 }
 </style>
-<!-- NEON RACER v33.03 — R2 DECAL STUDIO. Added to v33.02 without replacing its vehicle, garage, rim, paint or audio systems. -->
+<!-- FULL THROTTLE v33.03 — R2 DECAL STUDIO. Added to v33.02 without replacing its vehicle, garage, rim, paint or audio systems. -->
 <style id="nr-v3303-decal-css">
 #nrDecalOpen{width:100%;min-height:44px;margin-top:10px;padding:11px 14px;border:1px solid rgba(0,255,210,.62);background:linear-gradient(100deg,rgba(0,255,190,.16),rgba(0,14,23,.94));color:#dffff9;font:900 10px system-ui;letter-spacing:.17em;text-align:left;cursor:pointer}
 #nrDecalOpen:hover{border-color:#fff;box-shadow:0 0 16px #00ffc833}
@@ -13897,7 +13897,7 @@ async function loadPack(packId){
     var restored=items.find(function(item){return item.path===current.path&&Number(item.partIndex||0)===Number(current.partIndex||0);});
     if(restored){if(selectedId===current.id)selectedId=restored.id;current.id=restored.id;current.partIndex=restored.partIndex||0;byId[restored.id]=restored;persist();}
    }
-  }catch(err){status('PACK LOAD FAILED: '+err.message+' · VERIFY R2 ZIP PATH / CORS');console.error('Neon Racer decal pack load failed:',err);}
+  }catch(err){status('PACK LOAD FAILED: '+err.message+' · VERIFY R2 ZIP PATH / CORS');console.error('Full Throttle decal pack load failed:',err);}
   finally{delete packLoading[packId];}
  })();
  return packLoading[packId];
@@ -14478,7 +14478,7 @@ body>#carPaintPanel.is-portaled.open .paint-actions{gap:3px!important}
  }
  const vehicles=$('nrBootVehicles'),graphics=$('nrBootGraphics'),network=$('nrBootNetwork');
  const started=performance.now();
- let progress=window.__nrBootLoadProgress||{total:0,loaded:0,failed:0,done:false,phase:'INITIALIZING NEON RACER ENGINE'};
+ let progress=window.__nrBootLoadProgress||{total:0,loaded:0,failed:0,done:false,phase:'INITIALIZING FULL THROTTLE ENGINE'};
  let initialized=!!window.__nrGameInitialized,cityReady=false,rimReady=false,rimPromiseObserved=false,finished=false;
  let shownPercent=0,lastProgressFrame=started;
  if(window.__nrCityBuildingsReady&&typeof window.__nrCityBuildingsReady.then==='function'){
@@ -14538,7 +14538,7 @@ body>#carPaintPanel.is-portaled.open .paint-actions{gap:3px!important}
   if(graphics)graphics.textContent=initialized?'ONLINE':'STARTING';
   if(network)network.textContent=(progress.done&&cityReady&&rimReady)?((Number(progress.failed)>0||Number(city.failed)>0||rimErrors)?'LIMITED':'STABLE'):'SYNCING';
   if(stage){
-   if(!initialized)stage.textContent='INITIALIZING NEON RACER ENGINE';
+   if(!initialized)stage.textContent='INITIALIZING FULL THROTTLE ENGINE';
    else if(carDone<carTotal||!progress.done)stage.textContent=String(progress.phase||'PRELOADING REAL VEHICLES').toUpperCase();
    else if(cityDone<cityTotal)stage.textContent='CITY MODELS · '+cityDone+'/'+cityTotal+' READY';
    else if(!rimReady||rimFraction<1)stage.textContent='PRELOADING 13 REAL RIM DESIGNS · '+rimDone+'/'+(rimTotal||1);
@@ -15083,7 +15083,7 @@ setTimeout(()=>{try{ftUpdateHud();}catch(_){}},0);
 <!-- v33.21: Track 33 receives layered neon-lime wall chevrons; all dedicated wireframe building passes use a bright unlit emissive shader path so no outlines render black. -->
 
 
-<!-- NEON RACER v33.38: retain v33.37 systems; black-default body decals and shared hexagonal decal color selector. -->
+<!-- FULL THROTTLE v33.38: retain v33.37 systems; black-default body decals and shared hexagonal decal color selector. -->
 
 <style id="nr-v339-decal-color-picker-visibility-and-quality">
  #nrDecalSide{max-height:min(340px,46vh)!important;min-height:270px!important;overflow-y:auto!important;align-content:start!important}
@@ -15163,7 +15163,7 @@ setTimeout(()=>{try{ftUpdateHud();}catch(_){}},0);
 <!-- v33.41: allow required Track 8 and Track 33 scenery passes during pre-race cinematics; signal Track 33 building readiness so the launch gate can complete. -->
 
 
-<!-- NEON RACER v33.42: decal surfaces use vehicle-world normals and the same procedural sky/city/showroom reflection environment as the car paint shader, with glossy clearcoat highlights. -->
+<!-- FULL THROTTLE v33.42: decal surfaces use vehicle-world normals and the same procedural sky/city/showroom reflection environment as the car paint shader, with glossy clearcoat highlights. -->
 
 
 <!-- v33.43: restore WebGL face-culling state after decal rendering; add animated emissive material to Track 33 tunnel collars, helical bands and inner light bars for neon-green breathing and flicker. -->
